@@ -1,0 +1,6 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ GenerateSemataObjectModel Processor="GenerateSemataObjectModel" #>
+<# OutputUsingDirectives(); #>
+using System.ComponentModel;
+<# GenerateClasses("Orderprocessing.ds", "CustomerMaintenance", "ObservableCollection"); #>
