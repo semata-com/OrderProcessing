@@ -28,29 +28,52 @@ namespace CustomerMaintenance
             InitializeComponent();
             orderProcessing_ = new OrderProcessing();
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
+            EnableDisable();
+        }
+
+        private bool IsChanged
+        {
+            get
+            {
+                return customer_ != null && (customer_.IsNew || customer_.IsChanged);
+            }
         }
 
         public void EnableDisable()
         {
-            NewButton.IsEnabled = !customer_.Changed;
-            SaveButton.IsEnabled = customer_.Changed;
-            CancelButton.IsEnabled = customer_.Changed;
+            DeleteButton.IsEnabled = CustomerList.SelectedItem != null && !IsChanged;
+            NewButton.IsEnabled = !IsChanged;
+            SaveButton.IsEnabled = IsChanged;
+            CancelButton.IsEnabled = SaveButton.IsEnabled;
+            CodeTextBox.IsEnabled = customer_ != null;
+            NameTextBox.IsEnabled = customer_ != null;
+            AddressLine1TextBox.IsEnabled = customer_ != null;
+            AddressLine2TextBox.IsEnabled = customer_ != null;
+            AddressLine3TextBox.IsEnabled = customer_ != null;
+            PostCodeTextBox.IsEnabled = customer_ != null;
         }
 
-        private bool SetCustomer(Customer customer)
+        private void SetCustomer(Customer customer)
         {
-            bool customerSet = false;
-            if (customer_ == null
-                || !customer_.Changed
-                || MessageBox.Show("Has been edited", "Customer", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            customer_ = customer;
+            this.DataContext = customer_;
+            if (customer != null)
             {
-                if (customer_ != null)
-                {
-                    customer_.CancelEdits();
-                }
-                customer_ = customer;
-                this.DataContext = customer_;
                 customer_.PropertyChanged += CustomerChanged;
+            }
+        }
+
+        private async Task<bool> CheckAndSetCustomer(Customer customer)
+        {
+            if (IsChanged
+                && MessageBox.Show("Has been edited, Save Changes?", "Customer", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            {
+                await SaveCustomer();
+            }
+            bool customerSet = false;
+            if (!IsChanged)
+            {
+                SetCustomer(customer);
                 customerSet = true;
             }
             return customerSet;
@@ -61,20 +84,27 @@ namespace CustomerMaintenance
             EnableDisable();
         }
 
+        private async Task SaveCustomer()
+        {
+            await Task.Run(() => customer_.Write());
+            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
+            CustomerList.SelectedItem = customer_;
+        }
+
         private async Task NewCustomer()
         {
             Customer customer = await Task.Run(() => orderProcessing_.CustomerItems.Create());
-            if (SetCustomer(customer))
+            if (await CheckAndSetCustomer(customer))
             {
                 CustomerList.SelectedItem = null;
             }
         }
 
-        private void CustomerFilter_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterValue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (CustomerFilter.Text != "")
+            if (FilterValue.Text != "")
             {
-                CustomerList.Items.Filter = x => ((Customer)x).Name.Value.StartsWith(CustomerFilter.Text);
+                CustomerList.Items.Filter = x => ((string)((Customer)x).Name.Value).StartsWith(FilterValue.Text);
             }
             else
             {
@@ -85,43 +115,43 @@ namespace CustomerMaintenance
         private async void NewButton_Click(object sender, RoutedEventArgs e)
         {
             await NewCustomer();
+            EnableDisable();
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() => customer_.Write());
-            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
-            CustomerList.SelectedItem = customer_;
+            await SaveCustomer();
             EnableDisable();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             customer_.CancelEdits();
-            EnableDisable();
-        }
-
-        private async void DeleteCustomerButton_Click(object sender, RoutedEventArgs e)
-        {
-            Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
-            if (selectedCustomer != null)
+            if (customer_.IsNew)
             {
-                await Task.Run(() =>
-                {
-                    selectedCustomer.Delete();
-                    CustomerList.ItemsSource = orderProcessing_.CustomerItems.GetItems();
-                });
-                await NewCustomer();
+                SetCustomer(null);
             }
             EnableDisable();
         }
 
-        private void CustomerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
+            if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name.Value +"?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                await Task.Run(() => selectedCustomer.Delete());
+                SetCustomer(null);
+                CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
+                EnableDisable();
+            }
+        }
+
+        private async void CustomerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
             if (selectedCustomer != null && selectedCustomer != customer_)
             {
-                if (!SetCustomer(selectedCustomer))
+                if (!(await CheckAndSetCustomer(selectedCustomer)))
                 {
                     CustomerList.SelectedItem = e.RemovedItems.Count > 0 ? e.RemovedItems[0] : null;
                 }
@@ -131,7 +161,7 @@ namespace CustomerMaintenance
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            await NewCustomer();
+            SetCustomer(null);
             CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
             EnableDisable();
         }

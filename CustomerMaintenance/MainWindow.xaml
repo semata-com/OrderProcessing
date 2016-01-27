@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="CustomerMaintenance.MainWindow"
-        Title="MainWindow" Height="569">
+        Title="Customer Details" Height="800">
     <Window.Resources>
         <DataTemplate x:Key="CustomerName">
             <StackPanel Orientation="Horizontal">
@@ -12,28 +12,33 @@
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
-    <Grid Loaded="Grid_Loaded">
+    <StackPanel  Orientation="Vertical" Loaded="Grid_Loaded">
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Filter Attribute" VerticalAlignment="Center"/>
+            <ComboBox x:Name="FilterAttribute" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" Width="128"/>
+            <Label Content="Value" VerticalAlignment="Center"/>
+            <TextBox x:Name="FilterValue" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="128" TextChanged="FilterValue_TextChanged"/>
+        </StackPanel>
         <ListBox x:Name="CustomerList"
 			HorizontalAlignment="Left" 
 			Height="127"  
-			Margin="11,48,0,0" 
+			Margin="10,10,0,0" 
 			VerticalAlignment="Top"
 			Width="735"
 			ItemTemplate="{StaticResource CustomerName}" RenderTransformOrigin="0.5,0.5" SelectionChanged="CustomerList_SelectionChanged"/>
-        <TextBox x:Name="CustomerFilter" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="128" TextChanged="CustomerFilter_TextChanged"/>
-        <Button x:Name="DeleteCustomerButton" Content="Delete" HorizontalAlignment="Left" Height="24" Margin="609,189,0,0" VerticalAlignment="Top" Width="141" Click="DeleteCustomerButton_Click"/>
-        <Grid HorizontalAlignment="Left" Height="255" Margin="10,229,0,0" VerticalAlignment="Top" Width="740">
+        <Button x:Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="DeleteButton_Click"/>
+        <Grid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="740">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition  Height="30"/>
+                <RowDefinition  Height="30"/>
+                <RowDefinition  Height="30"/>
+                <RowDefinition  Height="30"/>
+                <RowDefinition  Height="30"/>
+                <RowDefinition  Height="30"/>
             </Grid.RowDefinitions>
             <Label Content="Code" Grid.Row="0" Grid.Column="0"/>
             <Label Content="Name" Grid.Row="1" Grid.Column="0"/>
@@ -41,16 +46,17 @@
             <Label Content="Line2" Grid.Row="3" Grid.Column="0"/>
             <Label Content="Line 3" Grid.Row="4" Grid.Column="0"/>
             <Label Content="Post code" Grid.Row="5" Grid.Column="0"/>
-            <TextBox Text="{Binding Code.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
-            <TextBox Text="{Binding Name.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
-            <TextBox Text="{Binding AddressLine1.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
-            <TextBox Text="{Binding AddressLine2.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1"/>
-            <TextBox Text="{Binding AddressLine3.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1"/>
-            <TextBox Text="{Binding PostCode.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1"/>
+            <TextBox x:Name="CodeTextBox" Text="{Binding Code.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
+            <TextBox x:Name="NameTextBox" Text="{Binding Name.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine1TextBox" Text="{Binding AddressLine1.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine2TextBox" Text="{Binding AddressLine2.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine3TextBox" Text="{Binding AddressLine3.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1"/>
+            <TextBox x:Name="PostCodeTextBox" Text="{Binding PostCode.Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1"/>
         </Grid>
-        <Button x:Name="NewButton" Content="New" HorizontalAlignment="Left" Height="24" Margin="140,505,0,0" VerticalAlignment="Top" Width="141" Click="NewButton_Click"/>
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Height="24" Margin="328,505,0,0" VerticalAlignment="Top" Width="141" Click="SaveButton_Click"/>
-        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Height="24" Margin="507,505,0,0" VerticalAlignment="Top" Width="141" Click="CancelButton_Click"/>
-
-    </Grid>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="NewButton" Content="New" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="NewButton_Click"/>
+            <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="SaveButton_Click"/>
+            <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="CancelButton_Click"/>
+        </StackPanel>
+    </StackPanel>
 </Window>
