@@ -22,13 +22,19 @@ namespace CustomerMaintenance
     {
         Customer customer_;
         OrderProcessing orderProcessing_;
+        string filterAttribute_ = "Name";
+        string filterValue_ = "";
 
         public MainWindow()
         {
             InitializeComponent();
             orderProcessing_ = new OrderProcessing();
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
-            EnableDisable();
+            SetControlsState();
+            FilterAttribute.Items.Add("Code");
+            FilterAttribute.Items.Add("Name");
+            FilterAttribute.Items.Add("Address Line 1");
+            FilterAttribute.SelectedIndex = 1;
         }
 
         private bool IsChanged
@@ -39,18 +45,32 @@ namespace CustomerMaintenance
             }
         }
 
-        public void EnableDisable()
+        private void SetTextBoxState(TextBox textBox)
         {
+            textBox.IsEnabled = customer_ != null;
+            if (textBox.IsEnabled)
+            {
+                textBox.BorderBrush = Brushes.Black;
+            }
+            else
+            {
+                textBox.BorderBrush = Brushes.Gray;
+            }
+        }
+
+        public void SetControlsState()
+        {
+            ApplyFilterButton.IsEnabled = ((string)FilterAttribute.SelectedValue != filterAttribute_ || FilterValue.Text != filterValue_);
             DeleteButton.IsEnabled = CustomerList.SelectedItem != null && !IsChanged;
             NewButton.IsEnabled = !IsChanged;
             SaveButton.IsEnabled = IsChanged;
             CancelButton.IsEnabled = SaveButton.IsEnabled;
-            CodeTextBox.IsEnabled = customer_ != null;
-            NameTextBox.IsEnabled = customer_ != null;
-            AddressLine1TextBox.IsEnabled = customer_ != null;
-            AddressLine2TextBox.IsEnabled = customer_ != null;
-            AddressLine3TextBox.IsEnabled = customer_ != null;
-            PostCodeTextBox.IsEnabled = customer_ != null;
+            SetTextBoxState(CodeTextBox);
+            SetTextBoxState(NameTextBox);
+            SetTextBoxState(AddressLine1TextBox);
+            SetTextBoxState(AddressLine2TextBox);
+            SetTextBoxState(AddressLine3TextBox);
+            SetTextBoxState(PostCodeTextBox);
         }
 
         private void SetCustomer(Customer customer)
@@ -81,14 +101,19 @@ namespace CustomerMaintenance
 
         private void CustomerChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            EnableDisable();
+            SetControlsState();
+        }
+
+        private async Task LoadCustomers()
+        {
+            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItemsByPrefix(filterAttribute_, filterValue_));
+            CustomerList.SelectedItem = customer_;
         }
 
         private async Task SaveCustomer()
         {
             await Task.Run(() => customer_.Write());
-            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
-            CustomerList.SelectedItem = customer_;
+            await LoadCustomers();
         }
 
         private async Task NewCustomer()
@@ -100,28 +125,35 @@ namespace CustomerMaintenance
             }
         }
 
-        private void FilterValue_TextChanged(object sender, TextChangedEventArgs e)
+        private async void ApplyFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            if (FilterValue.Text != "")
-            {
-                CustomerList.Items.Filter = x => ((string)((Customer)x).Name.Value).StartsWith(FilterValue.Text);
-            }
-            else
-            {
-                CustomerList.Items.Filter = null;
-            }
+            filterAttribute_ = FilterAttribute.Text;
+            filterValue_ = FilterValue.Text;
+            await LoadCustomers();
         }
 
         private async void NewButton_Click(object sender, RoutedEventArgs e)
         {
             await NewCustomer();
-            EnableDisable();
+            SetControlsState();
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             await SaveCustomer();
-            EnableDisable();
+            SetControlsState();
+        }
+
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
+            if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name.Value + "?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                await Task.Run(() => selectedCustomer.Delete());
+                SetCustomer(null);
+                await LoadCustomers();
+                SetControlsState();
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -131,19 +163,13 @@ namespace CustomerMaintenance
             {
                 SetCustomer(null);
             }
-            EnableDisable();
+            SetControlsState();
         }
 
-        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
-            if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name.Value +"?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                await Task.Run(() => selectedCustomer.Delete());
-                SetCustomer(null);
-                CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
-                EnableDisable();
-            }
+            Close();
         }
 
         private async void CustomerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -156,15 +182,27 @@ namespace CustomerMaintenance
                     CustomerList.SelectedItem = e.RemovedItems.Count > 0 ? e.RemovedItems[0] : null;
                 }
             }
-            EnableDisable();
+            SetControlsState();
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             SetCustomer(null);
-            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
-            EnableDisable();
+            await LoadCustomers();
+            SetControlsState();
         }
+
+        private void FilterAttribute_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetControlsState();
+        }
+
+        private void FilterValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SetControlsState();
+        }
+
+
 
     }
 }
