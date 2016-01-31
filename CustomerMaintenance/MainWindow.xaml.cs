@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,10 @@ namespace CustomerMaintenance
     /// </summary>
     public partial class MainWindow : Window
     {
+        ObservableCollection<Customer> customerList_;
         Customer customer_;
         OrderProcessing orderProcessing_;
-        string filterAttribute_ = "Name";
+        string filterAttribute_ = "(No Filter)";
         string filterValue_ = "";
 
         public MainWindow()
@@ -30,11 +32,12 @@ namespace CustomerMaintenance
             InitializeComponent();
             orderProcessing_ = new OrderProcessing();
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
-            SetControlsState();
-            FilterAttribute.Items.Add("Code");
-            FilterAttribute.Items.Add("Name");
-            FilterAttribute.Items.Add("Address Line 1");
-            FilterAttribute.SelectedIndex = 1;
+            SetControlsState(true);
+            FilterAttributeComboBox.Items.Add("(No Filter)");
+            FilterAttributeComboBox.Items.Add("Code");
+            FilterAttributeComboBox.Items.Add("Name");
+            FilterAttributeComboBox.Items.Add("Address Line 1");
+            FilterAttributeComboBox.SelectedIndex = 0;
         }
 
         private bool IsChanged
@@ -45,9 +48,9 @@ namespace CustomerMaintenance
             }
         }
 
-        private void SetTextBoxState(TextBox textBox)
+        private void SetTextBoxState(bool enable, TextBox textBox)
         {
-            textBox.IsEnabled = customer_ != null;
+            textBox.IsEnabled = enable && customer_ != null;
             if (textBox.IsEnabled)
             {
                 textBox.BorderBrush = Brushes.Black;
@@ -58,19 +61,21 @@ namespace CustomerMaintenance
             }
         }
 
-        public void SetControlsState()
+        public void SetControlsState(bool enable)
         {
-            ApplyFilterButton.IsEnabled = ((string)FilterAttribute.SelectedValue != filterAttribute_ || FilterValue.Text != filterValue_);
-            DeleteButton.IsEnabled = CustomerList.SelectedItem != null && !IsChanged;
-            NewButton.IsEnabled = !IsChanged;
-            SaveButton.IsEnabled = IsChanged;
+            ApplyFilterButton.IsEnabled = enable && ((string)FilterAttributeComboBox.SelectedValue != filterAttribute_ || FilterValueTextBox.Text != filterValue_);
+            FilterValueTextBox.IsEnabled = (string)FilterAttributeComboBox.SelectedValue != "(No Filter)";
+            DeleteButton.IsEnabled = enable && CustomerList.SelectedItem != null && !IsChanged;
+            NewButton.IsEnabled = enable && !IsChanged;
+            SaveButton.IsEnabled = enable && IsChanged;
             CancelButton.IsEnabled = SaveButton.IsEnabled;
-            SetTextBoxState(CodeTextBox);
-            SetTextBoxState(NameTextBox);
-            SetTextBoxState(AddressLine1TextBox);
-            SetTextBoxState(AddressLine2TextBox);
-            SetTextBoxState(AddressLine3TextBox);
-            SetTextBoxState(PostCodeTextBox);
+            SetTextBoxState(enable, CodeTextBox);
+            SetTextBoxState(enable, NameTextBox);
+            SetTextBoxState(enable, AddressLine1TextBox);
+            SetTextBoxState(enable, AddressLine2TextBox);
+            SetTextBoxState(enable, AddressLine3TextBox);
+            SetTextBoxState(enable, PostCodeTextBox);
+            Cursor = (enable ? Cursors.Arrow : Cursors.Wait);
         }
 
         private void SetCustomer(Customer customer)
@@ -101,12 +106,20 @@ namespace CustomerMaintenance
 
         private void CustomerChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            SetControlsState();
+            SetControlsState(true);
         }
 
         private async Task LoadCustomers()
         {
-            CustomerList.ItemsSource = await Task.Run(() => orderProcessing_.CustomerItems.GetItemsByPrefix(filterAttribute_, filterValue_));
+            if (filterAttribute_ == "(No Filter)")
+            {
+                customerList_ = await Task.Run(() => orderProcessing_.CustomerItems.GetItems());
+            }
+            else
+            {
+                customerList_ = await Task.Run(() => orderProcessing_.CustomerItems.GetItemsByPrefix(filterAttribute_, filterValue_));
+            }
+            CustomerList.ItemsSource = customerList_;
             CustomerList.SelectedItem = customer_;
         }
 
@@ -127,21 +140,25 @@ namespace CustomerMaintenance
 
         private async void ApplyFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            filterAttribute_ = FilterAttribute.Text;
-            filterValue_ = FilterValue.Text;
+            SetControlsState(false);
+            filterAttribute_ = FilterAttributeComboBox.Text;
+            filterValue_ = FilterValueTextBox.Text;
             await LoadCustomers();
+            SetControlsState(true);
         }
 
         private async void NewButton_Click(object sender, RoutedEventArgs e)
         {
+            SetControlsState(false);
             await NewCustomer();
-            SetControlsState();
+            SetControlsState(true);
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            SetControlsState(false);
             await SaveCustomer();
-            SetControlsState();
+            SetControlsState(true);
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -149,10 +166,12 @@ namespace CustomerMaintenance
             Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
             if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name.Value + "?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
+                SetControlsState(false);
                 await Task.Run(() => selectedCustomer.Delete());
+                customerList_.Remove(customer_);
                 SetCustomer(null);
-                await LoadCustomers();
-                SetControlsState();
+                //await LoadCustomers();
+                SetControlsState(true);
             }
         }
 
@@ -163,7 +182,7 @@ namespace CustomerMaintenance
             {
                 SetCustomer(null);
             }
-            SetControlsState();
+            SetControlsState(true);
         }
 
 
@@ -175,31 +194,32 @@ namespace CustomerMaintenance
         private async void CustomerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
-            if (selectedCustomer != null && selectedCustomer != customer_)
+            if (selectedCustomer != customer_)
             {
                 if (!(await CheckAndSetCustomer(selectedCustomer)))
                 {
                     CustomerList.SelectedItem = e.RemovedItems.Count > 0 ? e.RemovedItems[0] : null;
                 }
             }
-            SetControlsState();
+            SetControlsState(true);
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            SetControlsState(false);
             SetCustomer(null);
             await LoadCustomers();
-            SetControlsState();
+            SetControlsState(true);
         }
 
-        private void FilterAttribute_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void FilterAttributeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SetControlsState();
+            SetControlsState(true);
         }
 
-        private void FilterValue_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterValueTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SetControlsState();
+            SetControlsState(true);
         }
 
 
