@@ -42,119 +42,335 @@ namespace CustomerMaintenance
     
     public class Customer : ItemObject<OrderProcessing>
     {
-        public Attribute<OrderProcessing, string> AddressLine1 { get; private set;}
-        public Attribute<OrderProcessing, string> AddressLine2 { get; private set;}
-        public Attribute<OrderProcessing, string> AddressLine3 { get; private set;}
-        public Attribute<OrderProcessing, string> Code { get; private set;}
-        public Attribute<OrderProcessing, string> Name { get; private set;}
-        public Attribute<OrderProcessing, string> PostCode { get; private set;}
-        public Attribute<OrderProcessing, string> PostTown { get; private set;}
+        private Attribute<OrderProcessing, string> AddressLine1Attribute { get; set;}
+        private Attribute<OrderProcessing, string> AddressLine2Attribute { get; set;}
+        private Attribute<OrderProcessing, string> AddressLine3Attribute { get; set;}
+        private Attribute<OrderProcessing, string> CodeAttribute { get; set;}
+        private Attribute<OrderProcessing, string> NameAttribute { get; set;}
+        private Attribute<OrderProcessing, string> PostCodeAttribute { get; set;}
+        private Attribute<OrderProcessing, string> PostTownAttribute { get; set;}
         
         public Associations<OrderProcessing, Order, ObservableCollection<Order>> Has { get; private set;}
         
         internal Customer(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            AddressLine1 = new Attribute<OrderProcessing, string>(this, "Address Line 1", "AddressLine1");
-            AddAttribute(AddressLine1);
-            AddressLine2 = new Attribute<OrderProcessing, string>(this, "Address Line 2", "AddressLine2");
-            AddAttribute(AddressLine2);
-            AddressLine3 = new Attribute<OrderProcessing, string>(this, "Address Line 3", "AddressLine3");
-            AddAttribute(AddressLine3);
-            Code = new Attribute<OrderProcessing, string>(this, "Code", "Code");
-            AddAttribute(Code);
-            Name = new Attribute<OrderProcessing, string>(this, "Name", "Name");
-            AddAttribute(Name);
-            PostCode = new Attribute<OrderProcessing, string>(this, "Post Code", "PostCode");
-            AddAttribute(PostCode);
-            PostTown = new Attribute<OrderProcessing, string>(this, "Post Town", "PostTown");
-            AddAttribute(PostTown);
+            AddressLine1Attribute = new Attribute<OrderProcessing, string>(this, "Address Line 1", "AddressLine1");
+            AddAttribute(AddressLine1Attribute);
+            AddressLine2Attribute = new Attribute<OrderProcessing, string>(this, "Address Line 2", "AddressLine2");
+            AddAttribute(AddressLine2Attribute);
+            AddressLine3Attribute = new Attribute<OrderProcessing, string>(this, "Address Line 3", "AddressLine3");
+            AddAttribute(AddressLine3Attribute);
+            CodeAttribute = new Attribute<OrderProcessing, string>(this, "Code", "Code");
+            AddAttribute(CodeAttribute);
+            NameAttribute = new Attribute<OrderProcessing, string>(this, "Name", "Name");
+            AddAttribute(NameAttribute);
+            PostCodeAttribute = new Attribute<OrderProcessing, string>(this, "Post Code", "PostCode");
+            AddAttribute(PostCodeAttribute);
+            PostTownAttribute = new Attribute<OrderProcessing, string>(this, "Post Town", "PostTown");
+            AddAttribute(PostTownAttribute);
             Has = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "Has");
+        }
+        
+        public object AddressLine1
+        {
+            get
+            {
+                return AddressLine1Attribute.Value;
+            }
+            set
+            {
+                AddressLine1Attribute.Value = value;
+            }
+        }
+        
+        
+        public object AddressLine2
+        {
+            get
+            {
+                return AddressLine2Attribute.Value;
+            }
+            set
+            {
+                AddressLine2Attribute.Value = value;
+            }
+        }
+        
+        
+        public object AddressLine3
+        {
+            get
+            {
+                return AddressLine3Attribute.Value;
+            }
+            set
+            {
+                AddressLine3Attribute.Value = value;
+            }
+        }
+        
+        
+        public object Code
+        {
+            get
+            {
+                return CodeAttribute.Value;
+            }
+            set
+            {
+                CodeAttribute.Value = value;
+            }
+        }
+        
+        
+        public object Name
+        {
+            get
+            {
+                return NameAttribute.Value;
+            }
+            set
+            {
+                NameAttribute.Value = value;
+            }
+        }
+        
+        
+        public object PostCode
+        {
+            get
+            {
+                return PostCodeAttribute.Value;
+            }
+            set
+            {
+                PostCodeAttribute.Value = value;
+            }
+        }
+        
+        
+        public object PostTown
+        {
+            get
+            {
+                return PostTownAttribute.Value;
+            }
+            set
+            {
+                PostTownAttribute.Value = value;
+            }
         }
         
     }
     
     public class Order : ItemObject<OrderProcessing>
     {
-        public Attribute<OrderProcessing, string> CustomerReference { get; private set;}
-        public Attribute<OrderProcessing, DateTimeOffset> Date { get; private set;}
-        public Attribute<OrderProcessing, string> OrderNo { get; private set;}
+        private Attribute<OrderProcessing, string> CustomerReferenceAttribute { get; set;}
+        private Attribute<OrderProcessing, DateTimeOffset> DateAttribute { get; set;}
+        private Attribute<OrderProcessing, string> OrderNoAttribute { get; set;}
         
         public Associations<OrderProcessing, Customer, ObservableCollection<Customer>> By { get; private set;}
         public Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> Lines { get; private set;}
         
         internal Order(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            CustomerReference = new Attribute<OrderProcessing, string>(this, "Customer Reference", "CustomerReference");
-            AddAttribute(CustomerReference);
-            Date = new Attribute<OrderProcessing, DateTimeOffset>(this, "Date", "Date");
-            AddAttribute(Date);
-            OrderNo = new Attribute<OrderProcessing, string>(this, "Order No", "OrderNo");
-            AddAttribute(OrderNo);
+            CustomerReferenceAttribute = new Attribute<OrderProcessing, string>(this, "Customer Reference", "CustomerReference");
+            AddAttribute(CustomerReferenceAttribute);
+            DateAttribute = new Attribute<OrderProcessing, DateTimeOffset>(this, "Date", "Date");
+            AddAttribute(DateAttribute);
+            OrderNoAttribute = new Attribute<OrderProcessing, string>(this, "Order No", "OrderNo");
+            AddAttribute(OrderNoAttribute);
             By = new Associations<OrderProcessing, Customer, ObservableCollection<Customer>>(this, "By");
             Lines = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Lines");
+        }
+        
+        public object CustomerReference
+        {
+            get
+            {
+                return CustomerReferenceAttribute.Value;
+            }
+            set
+            {
+                CustomerReferenceAttribute.Value = value;
+            }
+        }
+        
+        
+        public object Date
+        {
+            get
+            {
+                return DateAttribute.Value;
+            }
+            set
+            {
+                DateAttribute.Value = value;
+            }
+        }
+        
+        
+        public object OrderNo
+        {
+            get
+            {
+                return OrderNoAttribute.Value;
+            }
+            set
+            {
+                OrderNoAttribute.Value = value;
+            }
         }
         
     }
     
     public class OrderLine : ItemObject<OrderProcessing>
     {
-        public Attribute<OrderProcessing, int> Quantity { get; private set;}
+        private Attribute<OrderProcessing, int> QuantityAttribute { get; set;}
         
         public Associations<OrderProcessing, Product, ObservableCollection<Product>> For { get; private set;}
         public Associations<OrderProcessing, Order, ObservableCollection<Order>> On { get; private set;}
         
         internal OrderLine(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            Quantity = new Attribute<OrderProcessing, int>(this, "Quantity", "Quantity");
-            AddAttribute(Quantity);
+            QuantityAttribute = new Attribute<OrderProcessing, int>(this, "Quantity", "Quantity");
+            AddAttribute(QuantityAttribute);
             For = new Associations<OrderProcessing, Product, ObservableCollection<Product>>(this, "For");
             On = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "On");
+        }
+        
+        public object Quantity
+        {
+            get
+            {
+                return QuantityAttribute.Value;
+            }
+            set
+            {
+                QuantityAttribute.Value = value;
+            }
         }
         
     }
     
     public class Product : ItemObject<OrderProcessing>
     {
-        public Attribute<OrderProcessing, string> Code { get; private set;}
-        public Attribute<OrderProcessing, string> Description { get; private set;}
-        public Attribute<OrderProcessing, decimal> Price { get; private set;}
-        public Attribute<OrderProcessing, int> StockLevel { get; private set;}
+        private Attribute<OrderProcessing, string> CodeAttribute { get; set;}
+        private Attribute<OrderProcessing, string> DescriptionAttribute { get; set;}
+        private Attribute<OrderProcessing, decimal> PriceAttribute { get; set;}
+        private Attribute<OrderProcessing, int> StockLevelAttribute { get; set;}
         
         public Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> Group { get; private set;}
         public Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> OrderedOn { get; private set;}
         
         internal Product(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            Code = new Attribute<OrderProcessing, string>(this, "Code", "Code");
-            AddAttribute(Code);
-            Description = new Attribute<OrderProcessing, string>(this, "Description", "Description");
-            AddAttribute(Description);
-            Price = new Attribute<OrderProcessing, decimal>(this, "Price", "Price");
-            AddAttribute(Price);
-            StockLevel = new Attribute<OrderProcessing, int>(this, "Stock Level", "StockLevel");
-            AddAttribute(StockLevel);
+            CodeAttribute = new Attribute<OrderProcessing, string>(this, "Code", "Code");
+            AddAttribute(CodeAttribute);
+            DescriptionAttribute = new Attribute<OrderProcessing, string>(this, "Description", "Description");
+            AddAttribute(DescriptionAttribute);
+            PriceAttribute = new Attribute<OrderProcessing, decimal>(this, "Price", "Price");
+            AddAttribute(PriceAttribute);
+            StockLevelAttribute = new Attribute<OrderProcessing, int>(this, "Stock Level", "StockLevel");
+            AddAttribute(StockLevelAttribute);
             Group = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Group");
             OrderedOn = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Ordered On");
+        }
+        
+        public object Code
+        {
+            get
+            {
+                return CodeAttribute.Value;
+            }
+            set
+            {
+                CodeAttribute.Value = value;
+            }
+        }
+        
+        
+        public object Description
+        {
+            get
+            {
+                return DescriptionAttribute.Value;
+            }
+            set
+            {
+                DescriptionAttribute.Value = value;
+            }
+        }
+        
+        
+        public object Price
+        {
+            get
+            {
+                return PriceAttribute.Value;
+            }
+            set
+            {
+                PriceAttribute.Value = value;
+            }
+        }
+        
+        
+        public object StockLevel
+        {
+            get
+            {
+                return StockLevelAttribute.Value;
+            }
+            set
+            {
+                StockLevelAttribute.Value = value;
+            }
         }
         
     }
     
     public class ProductGroup : ItemObject<OrderProcessing>
     {
-        public Attribute<OrderProcessing, string> Description { get; private set;}
-        public Attribute<OrderProcessing, string> Name { get; private set;}
+        private Attribute<OrderProcessing, string> DescriptionAttribute { get; set;}
+        private Attribute<OrderProcessing, string> NameAttribute { get; set;}
         
         public Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> ParentGroup { get; private set;}
         public Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>> SubGroups { get; private set;}
         
         internal ProductGroup(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            Description = new Attribute<OrderProcessing, string>(this, "Description", "Description");
-            AddAttribute(Description);
-            Name = new Attribute<OrderProcessing, string>(this, "Name", "Name");
-            AddAttribute(Name);
+            DescriptionAttribute = new Attribute<OrderProcessing, string>(this, "Description", "Description");
+            AddAttribute(DescriptionAttribute);
+            NameAttribute = new Attribute<OrderProcessing, string>(this, "Name", "Name");
+            AddAttribute(NameAttribute);
             ParentGroup = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Parent Group");
             SubGroups = new Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>>(this, "Sub Groups");
+        }
+        
+        public object Description
+        {
+            get
+            {
+                return DescriptionAttribute.Value;
+            }
+            set
+            {
+                DescriptionAttribute.Value = value;
+            }
+        }
+        
+        
+        public object Name
+        {
+            get
+            {
+                return NameAttribute.Value;
+            }
+            set
+            {
+                NameAttribute.Value = value;
+            }
         }
         
     }

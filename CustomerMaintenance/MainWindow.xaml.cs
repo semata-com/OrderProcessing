@@ -63,8 +63,8 @@ namespace CustomerMaintenance
 
         public void SetControlsState(bool enable)
         {
-            ApplyFilterButton.IsEnabled = enable && ((string)FilterAttributeComboBox.SelectedValue != filterAttribute_ || FilterValueTextBox.Text != filterValue_);
-            FilterValueTextBox.IsEnabled = (string)FilterAttributeComboBox.SelectedValue != "(No Filter)";
+            ApplyFilterButton.IsEnabled = enable && !IsChanged && ((string)FilterAttributeComboBox.SelectedValue != filterAttribute_ || FilterValueTextBox.Text != filterValue_);
+            FilterValueTextBox.IsEnabled = enable && !IsChanged && (string)FilterAttributeComboBox.SelectedValue != "(No Filter)";
             DeleteButton.IsEnabled = enable && CustomerList.SelectedItem != null && !IsChanged;
             NewButton.IsEnabled = enable && !IsChanged;
             SaveButton.IsEnabled = enable && IsChanged;
@@ -120,7 +120,6 @@ namespace CustomerMaintenance
                 customerList_ = await Task.Run(() => orderProcessing_.CustomerItems.GetItemsByPrefix(filterAttribute_, filterValue_));
             }
             CustomerList.ItemsSource = customerList_;
-            CustomerList.SelectedItem = customer_;
         }
 
         private async Task SaveCustomer()
@@ -144,6 +143,7 @@ namespace CustomerMaintenance
             filterAttribute_ = FilterAttributeComboBox.Text;
             filterValue_ = FilterValueTextBox.Text;
             await LoadCustomers();
+            CustomerList.SelectedItem = customer_;
             SetControlsState(true);
         }
 
@@ -158,13 +158,14 @@ namespace CustomerMaintenance
         {
             SetControlsState(false);
             await SaveCustomer();
+            CustomerList.SelectedItem = customer_;
             SetControlsState(true);
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
-            if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name.Value + "?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you wish to delete " + selectedCustomer.Name + "?", "Customer", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 SetControlsState(false);
                 await Task.Run(() => selectedCustomer.Delete());
@@ -194,7 +195,7 @@ namespace CustomerMaintenance
         private async void CustomerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Customer selectedCustomer = (Customer)CustomerList.SelectedItem;
-            if (selectedCustomer != customer_)
+            if (selectedCustomer != null && selectedCustomer != customer_)
             {
                 if (!(await CheckAndSetCustomer(selectedCustomer)))
                 {

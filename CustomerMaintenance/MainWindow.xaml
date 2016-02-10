@@ -9,9 +9,9 @@
     <Window.Resources>
         <DataTemplate x:Key="CustomerName">
             <StackPanel Orientation="Horizontal">
-                <TextBlock MinWidth="100" Text="{Binding Code.Value}" />
-                <TextBlock MinWidth="200" Text="{Binding Name.Value}" />
-                <TextBlock Text="{Binding AddressLine1.Value}" />
+                <TextBlock MinWidth="100" Text="{Binding Code}" />
+                <TextBlock MinWidth="200" Text="{Binding Name}" />
+                <TextBlock Text="{Binding AddressLine1}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -49,12 +49,12 @@
             <Label Content="Line2" Grid.Row="3" Grid.Column="0"/>
             <Label Content="Line 3" Grid.Row="4" Grid.Column="0"/>
             <Label Content="Post code" Grid.Row="5" Grid.Column="0"/>
-            <TextBox x:Name="CodeTextBox" Text="{Binding Code.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="0" Grid.Column="1"/>
-            <TextBox x:Name="NameTextBox" Text="{Binding Name.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="1" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine1TextBox" Text="{Binding AddressLine1.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="2" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine2TextBox" Text="{Binding AddressLine2.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="3" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine3TextBox" Text="{Binding AddressLine3.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="4" Grid.Column="1"/>
-            <TextBox x:Name="PostCodeTextBox" Text="{Binding PostCode.Value, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="5" Grid.Column="1"/>
+            <TextBox x:Name="CodeTextBox" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="0" Grid.Column="1"/>
+            <TextBox x:Name="NameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="1" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine1TextBox" Text="{Binding AddressLine1, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="2" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine2TextBox" Text="{Binding AddressLine2, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="3" Grid.Column="1"/>
+            <TextBox x:Name="AddressLine3TextBox" Text="{Binding AddressLine3, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="4" Grid.Column="1"/>
+            <TextBox x:Name="PostCodeTextBox" Text="{Binding PostCode, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="5" Grid.Column="1"/>
         </Grid>
         <StackPanel Orientation="Horizontal">
             <Button Name="NewButton" Content="New" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="NewButton_Click"/>
