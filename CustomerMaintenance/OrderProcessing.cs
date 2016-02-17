@@ -68,7 +68,7 @@ namespace CustomerMaintenance
             AddAttribute(PostCodeAttribute);
             PostTownAttribute = new Attribute<OrderProcessing, string>(this, "Post Town", "PostTown");
             AddAttribute(PostTownAttribute);
-            Has = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "Has");
+            Has = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "Has", "Has");
         }
         
         public object AddressLine1
@@ -180,8 +180,8 @@ namespace CustomerMaintenance
             AddAttribute(DateAttribute);
             OrderNoAttribute = new Attribute<OrderProcessing, string>(this, "Order No", "OrderNo");
             AddAttribute(OrderNoAttribute);
-            By = new Associations<OrderProcessing, Customer, ObservableCollection<Customer>>(this, "By");
-            Lines = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Lines");
+            By = new Associations<OrderProcessing, Customer, ObservableCollection<Customer>>(this, "By", "By");
+            Lines = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Lines", "Lines");
         }
         
         public object CustomerReference
@@ -235,8 +235,8 @@ namespace CustomerMaintenance
         {
             QuantityAttribute = new Attribute<OrderProcessing, int>(this, "Quantity", "Quantity");
             AddAttribute(QuantityAttribute);
-            For = new Associations<OrderProcessing, Product, ObservableCollection<Product>>(this, "For");
-            On = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "On");
+            For = new Associations<OrderProcessing, Product, ObservableCollection<Product>>(this, "For", "For");
+            On = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "On", "On");
         }
         
         public object Quantity
@@ -273,8 +273,8 @@ namespace CustomerMaintenance
             AddAttribute(PriceAttribute);
             StockLevelAttribute = new Attribute<OrderProcessing, int>(this, "Stock Level", "StockLevel");
             AddAttribute(StockLevelAttribute);
-            Group = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Group");
-            OrderedOn = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Ordered On");
+            Group = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Group", "Group");
+            OrderedOn = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Ordered On", "OrderedOn");
         }
         
         public object Code
@@ -344,8 +344,8 @@ namespace CustomerMaintenance
             AddAttribute(DescriptionAttribute);
             NameAttribute = new Attribute<OrderProcessing, string>(this, "Name", "Name");
             AddAttribute(NameAttribute);
-            ParentGroup = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Parent Group");
-            SubGroups = new Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>>(this, "Sub Groups");
+            ParentGroup = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Parent Group", "ParentGroup");
+            SubGroups = new Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>>(this, "Sub Groups", "SubGroups");
         }
         
         public object Description
