@@ -18,6 +18,10 @@ namespace CustomerMaintenance
         public Items<OrderProcessing, Product, ObservableCollection<Product>> ProductItems {get; private set;}
         public Items<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> ProductGroupItems {get; private set;}
         
+        public OrderProcessing(PropertyChangedEventDispatcher eventDispatcher) : base(eventDispatcher)
+        {
+        }
+        
         public void Open(string path)
         {
             base.OpenInstance(path);
@@ -50,7 +54,7 @@ namespace CustomerMaintenance
         private Attribute<OrderProcessing, string> PostCodeAttribute { get; set;}
         private Attribute<OrderProcessing, string> PostTownAttribute { get; set;}
         
-        public Associations<OrderProcessing, Order, ObservableCollection<Order>> Has { get; private set;}
+        public Association<OrderProcessing, Order, ObservableCollection<Order>> Has { get; private set;}
         
         internal Customer(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
@@ -68,7 +72,8 @@ namespace CustomerMaintenance
             AddAttribute(PostCodeAttribute);
             PostTownAttribute = new Attribute<OrderProcessing, string>(this, "Post Town", "PostTown");
             AddAttribute(PostTownAttribute);
-            Has = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "Has", "Has");
+            Has = new Association<OrderProcessing, Order, ObservableCollection<Order>>(this, "Has", "Has");
+            AddAssociation(Has);
         }
         
         public object AddressLine1
@@ -169,8 +174,8 @@ namespace CustomerMaintenance
         private Attribute<OrderProcessing, DateTimeOffset> DateAttribute { get; set;}
         private Attribute<OrderProcessing, string> OrderNoAttribute { get; set;}
         
-        public Associations<OrderProcessing, Customer, ObservableCollection<Customer>> By { get; private set;}
-        public Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> Lines { get; private set;}
+        public Association<OrderProcessing, Customer, ObservableCollection<Customer>> By { get; private set;}
+        public Association<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> Lines { get; private set;}
         
         internal Order(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
@@ -180,8 +185,10 @@ namespace CustomerMaintenance
             AddAttribute(DateAttribute);
             OrderNoAttribute = new Attribute<OrderProcessing, string>(this, "Order No", "OrderNo");
             AddAttribute(OrderNoAttribute);
-            By = new Associations<OrderProcessing, Customer, ObservableCollection<Customer>>(this, "By", "By");
-            Lines = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Lines", "Lines");
+            By = new Association<OrderProcessing, Customer, ObservableCollection<Customer>>(this, "By", "By");
+            AddAssociation(By);
+            Lines = new Association<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Lines", "Lines");
+            AddAssociation(Lines);
         }
         
         public object CustomerReference
@@ -228,15 +235,17 @@ namespace CustomerMaintenance
     {
         private Attribute<OrderProcessing, int> QuantityAttribute { get; set;}
         
-        public Associations<OrderProcessing, Product, ObservableCollection<Product>> For { get; private set;}
-        public Associations<OrderProcessing, Order, ObservableCollection<Order>> On { get; private set;}
+        public Association<OrderProcessing, Product, ObservableCollection<Product>> For { get; private set;}
+        public Association<OrderProcessing, Order, ObservableCollection<Order>> On { get; private set;}
         
         internal OrderLine(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
             QuantityAttribute = new Attribute<OrderProcessing, int>(this, "Quantity", "Quantity");
             AddAttribute(QuantityAttribute);
-            For = new Associations<OrderProcessing, Product, ObservableCollection<Product>>(this, "For", "For");
-            On = new Associations<OrderProcessing, Order, ObservableCollection<Order>>(this, "On", "On");
+            For = new Association<OrderProcessing, Product, ObservableCollection<Product>>(this, "For", "For");
+            AddAssociation(For);
+            On = new Association<OrderProcessing, Order, ObservableCollection<Order>>(this, "On", "On");
+            AddAssociation(On);
         }
         
         public object Quantity
@@ -260,8 +269,8 @@ namespace CustomerMaintenance
         private Attribute<OrderProcessing, decimal> PriceAttribute { get; set;}
         private Attribute<OrderProcessing, int> StockLevelAttribute { get; set;}
         
-        public Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> Group { get; private set;}
-        public Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> OrderedOn { get; private set;}
+        public Association<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> Group { get; private set;}
+        public Association<OrderProcessing, OrderLine, ObservableCollection<OrderLine>> OrderedOn { get; private set;}
         
         internal Product(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
@@ -273,8 +282,10 @@ namespace CustomerMaintenance
             AddAttribute(PriceAttribute);
             StockLevelAttribute = new Attribute<OrderProcessing, int>(this, "Stock Level", "StockLevel");
             AddAttribute(StockLevelAttribute);
-            Group = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Group", "Group");
-            OrderedOn = new Associations<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Ordered On", "OrderedOn");
+            Group = new Association<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Group", "Group");
+            AddAssociation(Group);
+            OrderedOn = new Association<OrderProcessing, OrderLine, ObservableCollection<OrderLine>>(this, "Ordered On", "OrderedOn");
+            AddAssociation(OrderedOn);
         }
         
         public object Code
@@ -335,8 +346,8 @@ namespace CustomerMaintenance
         private Attribute<OrderProcessing, string> DescriptionAttribute { get; set;}
         private Attribute<OrderProcessing, string> NameAttribute { get; set;}
         
-        public Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> ParentGroup { get; private set;}
-        public Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>> SubGroups { get; private set;}
+        public Association<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>> ParentGroup { get; private set;}
+        public Association<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>> SubGroups { get; private set;}
         
         internal ProductGroup(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
@@ -344,8 +355,10 @@ namespace CustomerMaintenance
             AddAttribute(DescriptionAttribute);
             NameAttribute = new Attribute<OrderProcessing, string>(this, "Name", "Name");
             AddAttribute(NameAttribute);
-            ParentGroup = new Associations<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Parent Group", "ParentGroup");
-            SubGroups = new Associations<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>>(this, "Sub Groups", "SubGroups");
+            ParentGroup = new Association<OrderProcessing, ProductGroup, ObservableCollection<ProductGroup>>(this, "Parent Group", "ParentGroup");
+            AddAssociation(ParentGroup);
+            SubGroups = new Association<OrderProcessing, ItemObject<OrderProcessing>, ObservableCollection<ItemObject<OrderProcessing>>>(this, "Sub Groups", "SubGroups");
+            AddAssociation(SubGroups);
         }
         
         public object Description

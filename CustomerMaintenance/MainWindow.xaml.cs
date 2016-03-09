@@ -30,7 +30,7 @@ namespace CustomerMaintenance
         public MainWindow()
         {
             InitializeComponent();
-            orderProcessing_ = new OrderProcessing();
+            orderProcessing_ = new OrderProcessing(null);
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
             SetControlsState(true);
             FilterAttributeComboBox.Items.Add("(No Filter)");
