@@ -34,9 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Semata.DataStore, Version=1.0.131.0, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStore.ObjectModel, Version=1.0.131.0, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStore.Util, Version=1.0.131.0, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStore, Version=1.0.132.0, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStore.ObjectModel, Version=1.0.132.0, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStore.Util, Version=1.0.132.0, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
