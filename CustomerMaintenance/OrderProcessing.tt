@@ -3,4 +3,4 @@
 <#@ GenerateSemataObjectModel Processor="GenerateSemataObjectModel" #>
 <# OutputUsingDirectives(); #>
 using System.ComponentModel;
-<# GenerateClasses("Orderprocessing.ds", "CustomerMaintenance", "ObservableCollection"); #>
+<# GenerateObjectModel("OrderProcessing.ds", "OrderProcessingDS"); #>
