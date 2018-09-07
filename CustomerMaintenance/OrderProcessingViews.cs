@@ -7,9 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Semata.DataStore.ObjectModel;
 using Semata.DataStore.ObjectModel.Views;
-using OrderProcessingDS;
 using Semata.DataView;
-
 
 namespace CustomerMaintenance
 {
@@ -116,7 +114,7 @@ namespace CustomerMaintenance
         }
 }
 
-    public partial class CustomerView : ItemObjectView<OrderProcessingDS.Customer>
+    public partial class CustomerView : ItemObjectView<CustomerMaintenance.Customer>
     {
     
         ValueProperty addressLine1_;
@@ -127,7 +125,7 @@ namespace CustomerMaintenance
         ValueProperty postCode_;
         ValueProperty postTown_;
         ItemObjectViewBindingList<OrderView> has_ = null;
-        internal CustomerView(OrderProcessingDS.Customer customer, bool usePropertyChanged, bool writeOnEndEdit) : base(customer, usePropertyChanged, writeOnEndEdit)
+        internal CustomerView(CustomerMaintenance.Customer customer, bool usePropertyChanged, bool writeOnEndEdit) : base(customer, usePropertyChanged, writeOnEndEdit)
         {
         }
         
@@ -290,7 +288,7 @@ namespace CustomerMaintenance
         }
     }
     
-    public partial class OrderView : ItemObjectView<OrderProcessingDS.Order>
+    public partial class OrderView : ItemObjectView<CustomerMaintenance.Order>
     {
     
         ValueProperty customerReference_;
@@ -298,7 +296,7 @@ namespace CustomerMaintenance
         ValueProperty orderNo_;
         ItemObjectViewBindingList<CustomerView> by_ = null;
         ItemObjectViewBindingList<OrderLineView> lines_ = null;
-        internal OrderView(OrderProcessingDS.Order order, bool usePropertyChanged, bool writeOnEndEdit) : base(order, usePropertyChanged, writeOnEndEdit)
+        internal OrderView(CustomerMaintenance.Order order, bool usePropertyChanged, bool writeOnEndEdit) : base(order, usePropertyChanged, writeOnEndEdit)
         {
         }
         
@@ -394,13 +392,13 @@ namespace CustomerMaintenance
         }
     }
     
-    public partial class OrderLineView : ItemObjectView<OrderProcessingDS.OrderLine>
+    public partial class OrderLineView : ItemObjectView<CustomerMaintenance.OrderLine>
     {
     
         ValueProperty quantity_;
         ItemObjectViewBindingList<ProductView> for_ = null;
         ItemObjectViewBindingList<OrderView> on_ = null;
-        internal OrderLineView(OrderProcessingDS.OrderLine orderLine, bool usePropertyChanged, bool writeOnEndEdit) : base(orderLine, usePropertyChanged, writeOnEndEdit)
+        internal OrderLineView(CustomerMaintenance.OrderLine orderLine, bool usePropertyChanged, bool writeOnEndEdit) : base(orderLine, usePropertyChanged, writeOnEndEdit)
         {
         }
         
@@ -456,7 +454,7 @@ namespace CustomerMaintenance
         }
     }
     
-    public partial class ProductView : ItemObjectView<OrderProcessingDS.Product>
+    public partial class ProductView : ItemObjectView<CustomerMaintenance.Product>
     {
     
         ValueProperty code_;
@@ -466,7 +464,7 @@ namespace CustomerMaintenance
         ItemObjectViewBindingList<ProductGroupView> group_ = null;
         ItemObjectViewBindingList<ProductGroupView> is_ = null;
         ItemObjectViewBindingList<OrderLineView> orderedOn_ = null;
-        internal ProductView(OrderProcessingDS.Product product, bool usePropertyChanged, bool writeOnEndEdit) : base(product, usePropertyChanged, writeOnEndEdit)
+        internal ProductView(CustomerMaintenance.Product product, bool usePropertyChanged, bool writeOnEndEdit) : base(product, usePropertyChanged, writeOnEndEdit)
         {
         }
         
@@ -595,14 +593,14 @@ namespace CustomerMaintenance
         }
     }
     
-    public partial class ProductGroupView : ItemObjectView<OrderProcessingDS.ProductGroup>
+    public partial class ProductGroupView : ItemObjectView<CustomerMaintenance.ProductGroup>
     {
     
         ValueProperty description_;
         ValueProperty name_;
         ItemObjectViewBindingList<ProductView> contains_ = null;
         ItemObjectViewBindingList<ProductGroupView> parentGroup_ = null;
-        internal ProductGroupView(OrderProcessingDS.ProductGroup productGroup, bool usePropertyChanged, bool writeOnEndEdit) : base(productGroup, usePropertyChanged, writeOnEndEdit)
+        internal ProductGroupView(CustomerMaintenance.ProductGroup productGroup, bool usePropertyChanged, bool writeOnEndEdit) : base(productGroup, usePropertyChanged, writeOnEndEdit)
         {
         }
         

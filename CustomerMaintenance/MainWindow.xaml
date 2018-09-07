@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Semata.DataStore.ObjectModel.Views;assembly=Semata.DataStoreCLR.ObjectModel.Views"
+        xmlns:local="clr-namespace:Semata.DataView;assembly=Semata.DataStoreCLR.ObjectModel.Views"
         mc:Ignorable="d" x:Class="CustomerMaintenance.MainWindow"
         Title="Customer Details"
         SizeToContent="WidthAndHeight">
@@ -14,8 +16,15 @@
                 <TextBlock Text="{Binding AddressLine1}" />
             </StackPanel>
         </DataTemplate>
+        <local:DecimalToStringConverter x:Key="DecimalConverter" />
+        <local:CurrencyFormatter x:Key="CurrencyFormatter" />
+        <local:IsNotNullConverter x:Key="IsNotNull" />
+        <views:MyConverter x:Key="MyConverter" />
     </Window.Resources>
-    <StackPanel  Orientation="Vertical" Loaded="Grid_Loaded" Margin="20,20,20,20">
+    <StackPanel DataContext="{Binding EditableCustomers}"
+                Orientation="Vertical"
+                Loaded="Window_Loaded"
+                Margin="20,20,20,20">
         <StackPanel Orientation="Horizontal">
             <Label Content="Filter Attribute" VerticalAlignment="Center"/>
             <ComboBox x:Name="FilterAttributeComboBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" SelectionChanged="FilterAttributeComboBox_SelectionChanged"/>
@@ -24,13 +33,21 @@
             <Button Name="ApplyFilterButton" Content="Apply" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="ApplyFilterButton_Click"/>
         </StackPanel>
         <ListBox x:Name="CustomerList"
-			HorizontalAlignment="Left" 
-			Height="127"  
-			Margin="10,10,0,0" 
-			VerticalAlignment="Top"
-			Width="735"
-			ItemTemplate="{StaticResource CustomerName}" RenderTransformOrigin="0.5,0.5" SelectionChanged="CustomerList_SelectionChanged"/>
-        <Grid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="740">
+                 ItemsSource="{Binding List}"
+			     HorizontalAlignment="Left" 
+			     Height="127"  
+			     Margin="10,10,0,0" 
+			     VerticalAlignment="Top"
+			     Width="735"
+                 IsSynchronizedWithCurrentItem="True"
+			     ItemTemplate="{StaticResource CustomerName}" RenderTransformOrigin="0.5,0.5">
+        </ListBox>
+
+        <Grid HorizontalAlignment="Left"
+              Margin="10,10,0,0"
+              VerticalAlignment="Top"
+              Width="740"
+              DataContext="{Binding Detail.Data}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="250"/>
@@ -49,19 +66,84 @@
             <Label Content="Line2" Grid.Row="3" Grid.Column="0"/>
             <Label Content="Line 3" Grid.Row="4" Grid.Column="0"/>
             <Label Content="Post code" Grid.Row="5" Grid.Column="0"/>
-            <TextBox x:Name="CodeTextBox" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="0" Grid.Column="1"/>
-            <TextBox x:Name="NameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="1" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine1TextBox" Text="{Binding AddressLine1, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="2" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine2TextBox" Text="{Binding AddressLine2, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="3" Grid.Column="1"/>
-            <TextBox x:Name="AddressLine3TextBox" Text="{Binding AddressLine3, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="4" Grid.Column="1"/>
-            <TextBox x:Name="PostCodeTextBox" Text="{Binding PostCode, UpdateSourceTrigger=PropertyChanged}" Margin="1,1,1,1" Grid.Row="5" Grid.Column="1"/>
+            <TextBox x:Name="CodeTextBox" 
+                     Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                     Margin="1,1,1,1"
+                     Grid.Row="0"
+                     Grid.Column="1"/>
+            <TextBox x:Name="NameTextBox"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="True"
+                     Margin="1,1,1,1"
+                     Grid.Row="1"
+                     Grid.Column="1"/>
+            <TextBox x:Name="AddressLine1TextBox"
+                     Text="{Binding AddressLine1, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                     Margin="1,1,1,1"
+                     Grid.Row="2"
+                     Grid.Column="1"/>
+            <TextBox x:Name="AddressLine2TextBox"
+                     Text="{Binding AddressLine2, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                     Margin="1,1,1,1"
+                     Grid.Row="3"
+                     Grid.Column="1"/>
+            <TextBox x:Name="AddressLine3TextBox"
+                     Text="{Binding AddressLine3, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                     Margin="1,1,1,1"
+                     Grid.Row="4"
+                     Grid.Column="1"/>
+            <TextBox x:Name="PostCodeTextBox"
+                     Text="{Binding PostCode, UpdateSourceTrigger=PropertyChanged}"
+					 IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                     Margin="1,1,1,1"
+                     Grid.Row="5"
+                     Grid.Column="1"/>
         </Grid>
         <StackPanel Orientation="Horizontal">
-            <Button Name="NewButton" Content="New" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="NewButton_Click"/>
-            <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="DeleteButton_Click"/>
-            <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="SaveButton_Click"/>
-            <Button Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="CancelButton_Click"/>
-            <Button Name="CloseButton" Content="Close" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0" VerticalAlignment="Top" Width="141" Click="CloseButton_Click"/>
+            <Button Name="NewButton"
+                    Content="New"
+                    HorizontalAlignment="Left"
+                    Height="24"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="141"
+                    Command="{Binding Detail.NewCommand}"/>
+            <Button Name="DeleteButton"
+                    Content="Delete"
+                    HorizontalAlignment="Left"
+                    Height="24"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="141"
+                    Command="{Binding Detail.DeleteCommand}"/>
+            <Button Name="SaveButton"
+                    Content="Save"
+                    HorizontalAlignment="Left"
+                    Height="24"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="141"
+                    Command="{Binding Detail.SaveCommand}"/>
+            <Button Name="CancelButton"
+                    Content="Cancel"
+                    HorizontalAlignment="Left"
+                    Height="24"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="141"
+                    Command="{Binding Detail.CancelCommand}"/>
+            <Button Name="CloseButton"
+                    Content="Close"
+                    HorizontalAlignment="Left"
+                    Height="24"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="141"
+                    Click="CloseButton_Click"/>
         </StackPanel>
     </StackPanel>
 </Window>

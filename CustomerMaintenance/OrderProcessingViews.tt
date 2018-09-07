@@ -10,7 +10,5 @@ using System.Text;
 using System.Threading.Tasks;
 using Semata.DataStore.ObjectModel;
 using Semata.DataStore.ObjectModel.Views;
-using OrderProcessingDS;
 using Semata.DataView;
-
-<# GenerateObjectModelViews("OrderProcessing.ds", "OrderProcessingDS", "CustomerMaintenance"); #>
+<# GenerateObjectModelViews("OrderProcessing.ds", "CustomerMaintenance", "CustomerMaintenance"); #>

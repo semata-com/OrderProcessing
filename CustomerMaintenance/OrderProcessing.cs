@@ -6,7 +6,7 @@ using Semata.DataStore;
 using Semata.DataStore.ObjectModel;
 using System.ComponentModel;
 
-namespace OrderProcessingDS
+namespace CustomerMaintenance
 {
     public class OrderProcessing : DataStoreObject<OrderProcessing>
     {
@@ -58,42 +58,42 @@ namespace OrderProcessingDS
         
         internal Customer(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            AddressLine1Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine1", "AddressLine1", false, false, (x) => OnAddressLine1Changed(x), (x) => {return OnAddressLine1Writting(x);});
+            AddressLine1Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine1", "AddressLine1", false, false, (x) => OnAddressLine1Changed(x), (x) => {return OnAddressLine1Writing(x);});
             AddAttributeProperty(AddressLine1Property);
-            AddressLine2Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine2", "AddressLine2", false, false, (x) => OnAddressLine2Changed(x), (x) => {return OnAddressLine2Writting(x);});
+            AddressLine2Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine2", "AddressLine2", false, false, (x) => OnAddressLine2Changed(x), (x) => {return OnAddressLine2Writing(x);});
             AddAttributeProperty(AddressLine2Property);
-            AddressLine3Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine3", "AddressLine3", false, false, (x) => OnAddressLine3Changed(x), (x) => {return OnAddressLine3Writting(x);});
+            AddressLine3Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine3", "AddressLine3", false, false, (x) => OnAddressLine3Changed(x), (x) => {return OnAddressLine3Writing(x);});
             AddAttributeProperty(AddressLine3Property);
-            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWritting(x);});
+            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWriting(x);});
             AddAttributeProperty(CodeProperty);
-            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWritting(x);});
+            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWriting(x);});
             AddAttributeProperty(NameProperty);
-            PostCodeProperty = new AttributeProperty<OrderProcessing, string>(this, "PostCode", "PostCode", false, false, (x) => OnPostCodeChanged(x), (x) => {return OnPostCodeWritting(x);});
+            PostCodeProperty = new AttributeProperty<OrderProcessing, string>(this, "PostCode", "PostCode", false, false, (x) => OnPostCodeChanged(x), (x) => {return OnPostCodeWriting(x);});
             AddAttributeProperty(PostCodeProperty);
-            PostTownProperty = new AttributeProperty<OrderProcessing, string>(this, "PostTown", "PostTown", false, false, (x) => OnPostTownChanged(x), (x) => {return OnPostTownWritting(x);});
+            PostTownProperty = new AttributeProperty<OrderProcessing, string>(this, "PostTown", "PostTown", false, false, (x) => OnPostTownChanged(x), (x) => {return OnPostTownWriting(x);});
             AddAttributeProperty(PostTownProperty);
             Has = new Association<OrderProcessing, Order>(this, "Has", "Has", "");
             AddAssociation("Has", Has);
         }
         partial void AddressLine1Changed(object value);
-        partial void AddressLine1Writting(ref object value);
+        partial void AddressLine1Writing(ref object value);
         partial void AddressLine2Changed(object value);
-        partial void AddressLine2Writting(ref object value);
+        partial void AddressLine2Writing(ref object value);
         partial void AddressLine3Changed(object value);
-        partial void AddressLine3Writting(ref object value);
+        partial void AddressLine3Writing(ref object value);
         partial void CodeChanged(object value);
-        partial void CodeWritting(ref object value);
+        partial void CodeWriting(ref object value);
         partial void NameChanged(object value);
-        partial void NameWritting(ref object value);
+        partial void NameWriting(ref object value);
         partial void PostCodeChanged(object value);
-        partial void PostCodeWritting(ref object value);
+        partial void PostCodeWriting(ref object value);
         partial void PostTownChanged(object value);
-        partial void PostTownWritting(ref object value);
+        partial void PostTownWriting(ref object value);
         partial void Validate();
         partial void CanDelete(ItemObjectDeleteResult result);
         partial void Deleting(ItemObjectDeleteResult result);
         partial void Created();
-        partial void Writting();
+        partial void Writing();
         partial void Written();
         
         protected void OnAddressLine1Changed(object value)
@@ -101,9 +101,9 @@ namespace OrderProcessingDS
             AddressLine1Changed(value);
         }
         
-        protected object OnAddressLine1Writting(object value)
+        protected object OnAddressLine1Writing(object value)
         {
-            AddressLine1Writting(ref value);
+            AddressLine1Writing(ref value);
             return value;
         }
         
@@ -112,9 +112,9 @@ namespace OrderProcessingDS
             AddressLine2Changed(value);
         }
         
-        protected object OnAddressLine2Writting(object value)
+        protected object OnAddressLine2Writing(object value)
         {
-            AddressLine2Writting(ref value);
+            AddressLine2Writing(ref value);
             return value;
         }
         
@@ -123,9 +123,9 @@ namespace OrderProcessingDS
             AddressLine3Changed(value);
         }
         
-        protected object OnAddressLine3Writting(object value)
+        protected object OnAddressLine3Writing(object value)
         {
-            AddressLine3Writting(ref value);
+            AddressLine3Writing(ref value);
             return value;
         }
         
@@ -134,9 +134,9 @@ namespace OrderProcessingDS
             CodeChanged(value);
         }
         
-        protected object OnCodeWritting(object value)
+        protected object OnCodeWriting(object value)
         {
-            CodeWritting(ref value);
+            CodeWriting(ref value);
             return value;
         }
         
@@ -145,9 +145,9 @@ namespace OrderProcessingDS
             NameChanged(value);
         }
         
-        protected object OnNameWritting(object value)
+        protected object OnNameWriting(object value)
         {
-            NameWritting(ref value);
+            NameWriting(ref value);
             return value;
         }
         
@@ -156,9 +156,9 @@ namespace OrderProcessingDS
             PostCodeChanged(value);
         }
         
-        protected object OnPostCodeWritting(object value)
+        protected object OnPostCodeWriting(object value)
         {
-            PostCodeWritting(ref value);
+            PostCodeWriting(ref value);
             return value;
         }
         
@@ -167,9 +167,9 @@ namespace OrderProcessingDS
             PostTownChanged(value);
         }
         
-        protected object OnPostTownWritting(object value)
+        protected object OnPostTownWriting(object value)
         {
-            PostTownWritting(ref value);
+            PostTownWriting(ref value);
             return value;
         }
         
@@ -193,9 +193,9 @@ namespace OrderProcessingDS
             Created();
         }
         
-        protected override void OnItemObjectWritting()
+        protected override void OnItemObjectWriting()
         {
-            Writting();
+            Writing();
         }
         
         protected override void OnItemObjectWritten()
@@ -301,11 +301,11 @@ namespace OrderProcessingDS
         
         internal Order(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            CustomerReferenceProperty = new AttributeProperty<OrderProcessing, string>(this, "CustomerReference", "CustomerReference", false, false, (x) => OnCustomerReferenceChanged(x), (x) => {return OnCustomerReferenceWritting(x);});
+            CustomerReferenceProperty = new AttributeProperty<OrderProcessing, string>(this, "CustomerReference", "CustomerReference", false, false, (x) => OnCustomerReferenceChanged(x), (x) => {return OnCustomerReferenceWriting(x);});
             AddAttributeProperty(CustomerReferenceProperty);
-            DateProperty = new AttributeProperty<OrderProcessing, DateTime>(this, "Date", "Date", false, false, (x) => OnDateChanged(x), (x) => {return OnDateWritting(x);});
+            DateProperty = new AttributeProperty<OrderProcessing, DateTime>(this, "Date", "Date", false, false, (x) => OnDateChanged(x), (x) => {return OnDateWriting(x);});
             AddAttributeProperty(DateProperty);
-            OrderNoProperty = new AttributeProperty<OrderProcessing, string>(this, "OrderNo", "OrderNo", false, false, (x) => OnOrderNoChanged(x), (x) => {return OnOrderNoWritting(x);});
+            OrderNoProperty = new AttributeProperty<OrderProcessing, string>(this, "OrderNo", "OrderNo", false, false, (x) => OnOrderNoChanged(x), (x) => {return OnOrderNoWriting(x);});
             AddAttributeProperty(OrderNoProperty);
             By = new Association<OrderProcessing, Customer>(this, "By", "By", "");
             AddAssociation("By", By);
@@ -313,16 +313,16 @@ namespace OrderProcessingDS
             AddAssociation("Lines", Lines);
         }
         partial void CustomerReferenceChanged(object value);
-        partial void CustomerReferenceWritting(ref object value);
+        partial void CustomerReferenceWriting(ref object value);
         partial void DateChanged(object value);
-        partial void DateWritting(ref object value);
+        partial void DateWriting(ref object value);
         partial void OrderNoChanged(object value);
-        partial void OrderNoWritting(ref object value);
+        partial void OrderNoWriting(ref object value);
         partial void Validate();
         partial void CanDelete(ItemObjectDeleteResult result);
         partial void Deleting(ItemObjectDeleteResult result);
         partial void Created();
-        partial void Writting();
+        partial void Writing();
         partial void Written();
         
         protected void OnCustomerReferenceChanged(object value)
@@ -330,9 +330,9 @@ namespace OrderProcessingDS
             CustomerReferenceChanged(value);
         }
         
-        protected object OnCustomerReferenceWritting(object value)
+        protected object OnCustomerReferenceWriting(object value)
         {
-            CustomerReferenceWritting(ref value);
+            CustomerReferenceWriting(ref value);
             return value;
         }
         
@@ -341,9 +341,9 @@ namespace OrderProcessingDS
             DateChanged(value);
         }
         
-        protected object OnDateWritting(object value)
+        protected object OnDateWriting(object value)
         {
-            DateWritting(ref value);
+            DateWriting(ref value);
             return value;
         }
         
@@ -352,9 +352,9 @@ namespace OrderProcessingDS
             OrderNoChanged(value);
         }
         
-        protected object OnOrderNoWritting(object value)
+        protected object OnOrderNoWriting(object value)
         {
-            OrderNoWritting(ref value);
+            OrderNoWriting(ref value);
             return value;
         }
         
@@ -378,9 +378,9 @@ namespace OrderProcessingDS
             Created();
         }
         
-        protected override void OnItemObjectWritting()
+        protected override void OnItemObjectWriting()
         {
-            Writting();
+            Writing();
         }
         
         protected override void OnItemObjectWritten()
@@ -436,7 +436,7 @@ namespace OrderProcessingDS
         
         internal OrderLine(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            QuantityProperty = new AttributeProperty<OrderProcessing, int>(this, "Quantity", "Quantity", false, false, (x) => OnQuantityChanged(x), (x) => {return OnQuantityWritting(x);});
+            QuantityProperty = new AttributeProperty<OrderProcessing, int>(this, "Quantity", "Quantity", false, false, (x) => OnQuantityChanged(x), (x) => {return OnQuantityWriting(x);});
             AddAttributeProperty(QuantityProperty);
             For = new Association<OrderProcessing, Product>(this, "For", "For", "");
             AddAssociation("For", For);
@@ -444,12 +444,12 @@ namespace OrderProcessingDS
             AddAssociation("On", On);
         }
         partial void QuantityChanged(object value);
-        partial void QuantityWritting(ref object value);
+        partial void QuantityWriting(ref object value);
         partial void Validate();
         partial void CanDelete(ItemObjectDeleteResult result);
         partial void Deleting(ItemObjectDeleteResult result);
         partial void Created();
-        partial void Writting();
+        partial void Writing();
         partial void Written();
         
         protected void OnQuantityChanged(object value)
@@ -457,9 +457,9 @@ namespace OrderProcessingDS
             QuantityChanged(value);
         }
         
-        protected object OnQuantityWritting(object value)
+        protected object OnQuantityWriting(object value)
         {
-            QuantityWritting(ref value);
+            QuantityWriting(ref value);
             return value;
         }
         
@@ -483,9 +483,9 @@ namespace OrderProcessingDS
             Created();
         }
         
-        protected override void OnItemObjectWritting()
+        protected override void OnItemObjectWriting()
         {
-            Writting();
+            Writing();
         }
         
         protected override void OnItemObjectWritten()
@@ -521,13 +521,13 @@ namespace OrderProcessingDS
         
         internal Product(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWritting(x);});
+            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWriting(x);});
             AddAttributeProperty(CodeProperty);
-            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWritting(x);});
+            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWriting(x);});
             AddAttributeProperty(DescriptionProperty);
-            PriceProperty = new AttributeProperty<OrderProcessing, decimal>(this, "Price", "Price", false, false, (x) => OnPriceChanged(x), (x) => {return OnPriceWritting(x);});
+            PriceProperty = new AttributeProperty<OrderProcessing, decimal>(this, "Price", "Price", false, false, (x) => OnPriceChanged(x), (x) => {return OnPriceWriting(x);});
             AddAttributeProperty(PriceProperty);
-            StockLevelProperty = new AttributeProperty<OrderProcessing, int>(this, "StockLevel", "StockLevel", false, false, (x) => OnStockLevelChanged(x), (x) => {return OnStockLevelWritting(x);});
+            StockLevelProperty = new AttributeProperty<OrderProcessing, int>(this, "StockLevel", "StockLevel", false, false, (x) => OnStockLevelChanged(x), (x) => {return OnStockLevelWriting(x);});
             AddAttributeProperty(StockLevelProperty);
             Group = new Association<OrderProcessing, ProductGroup>(this, "Group", "Group", "");
             AddAssociation("Group", Group);
@@ -537,18 +537,18 @@ namespace OrderProcessingDS
             AddAssociation("OrderedOn", OrderedOn);
         }
         partial void CodeChanged(object value);
-        partial void CodeWritting(ref object value);
+        partial void CodeWriting(ref object value);
         partial void DescriptionChanged(object value);
-        partial void DescriptionWritting(ref object value);
+        partial void DescriptionWriting(ref object value);
         partial void PriceChanged(object value);
-        partial void PriceWritting(ref object value);
+        partial void PriceWriting(ref object value);
         partial void StockLevelChanged(object value);
-        partial void StockLevelWritting(ref object value);
+        partial void StockLevelWriting(ref object value);
         partial void Validate();
         partial void CanDelete(ItemObjectDeleteResult result);
         partial void Deleting(ItemObjectDeleteResult result);
         partial void Created();
-        partial void Writting();
+        partial void Writing();
         partial void Written();
         
         protected void OnCodeChanged(object value)
@@ -556,9 +556,9 @@ namespace OrderProcessingDS
             CodeChanged(value);
         }
         
-        protected object OnCodeWritting(object value)
+        protected object OnCodeWriting(object value)
         {
-            CodeWritting(ref value);
+            CodeWriting(ref value);
             return value;
         }
         
@@ -567,9 +567,9 @@ namespace OrderProcessingDS
             DescriptionChanged(value);
         }
         
-        protected object OnDescriptionWritting(object value)
+        protected object OnDescriptionWriting(object value)
         {
-            DescriptionWritting(ref value);
+            DescriptionWriting(ref value);
             return value;
         }
         
@@ -578,9 +578,9 @@ namespace OrderProcessingDS
             PriceChanged(value);
         }
         
-        protected object OnPriceWritting(object value)
+        protected object OnPriceWriting(object value)
         {
-            PriceWritting(ref value);
+            PriceWriting(ref value);
             return value;
         }
         
@@ -589,9 +589,9 @@ namespace OrderProcessingDS
             StockLevelChanged(value);
         }
         
-        protected object OnStockLevelWritting(object value)
+        protected object OnStockLevelWriting(object value)
         {
-            StockLevelWritting(ref value);
+            StockLevelWriting(ref value);
             return value;
         }
         
@@ -615,9 +615,9 @@ namespace OrderProcessingDS
             Created();
         }
         
-        protected override void OnItemObjectWritting()
+        protected override void OnItemObjectWriting()
         {
-            Writting();
+            Writing();
         }
         
         protected override void OnItemObjectWritten()
@@ -687,9 +687,9 @@ namespace OrderProcessingDS
         
         internal ProductGroup(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWritting(x);});
+            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWriting(x);});
             AddAttributeProperty(DescriptionProperty);
-            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWritting(x);});
+            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWriting(x);});
             AddAttributeProperty(NameProperty);
             Contains = new Association<OrderProcessing, Product>(this, "Contains", "Contains", "");
             AddAssociation("Contains", Contains);
@@ -699,14 +699,14 @@ namespace OrderProcessingDS
             AddAssociation("SubGroups", SubGroups);
         }
         partial void DescriptionChanged(object value);
-        partial void DescriptionWritting(ref object value);
+        partial void DescriptionWriting(ref object value);
         partial void NameChanged(object value);
-        partial void NameWritting(ref object value);
+        partial void NameWriting(ref object value);
         partial void Validate();
         partial void CanDelete(ItemObjectDeleteResult result);
         partial void Deleting(ItemObjectDeleteResult result);
         partial void Created();
-        partial void Writting();
+        partial void Writing();
         partial void Written();
         
         protected void OnDescriptionChanged(object value)
@@ -714,9 +714,9 @@ namespace OrderProcessingDS
             DescriptionChanged(value);
         }
         
-        protected object OnDescriptionWritting(object value)
+        protected object OnDescriptionWriting(object value)
         {
-            DescriptionWritting(ref value);
+            DescriptionWriting(ref value);
             return value;
         }
         
@@ -725,9 +725,9 @@ namespace OrderProcessingDS
             NameChanged(value);
         }
         
-        protected object OnNameWritting(object value)
+        protected object OnNameWriting(object value)
         {
-            NameWritting(ref value);
+            NameWriting(ref value);
             return value;
         }
         
@@ -751,9 +751,9 @@ namespace OrderProcessingDS
             Created();
         }
         
-        protected override void OnItemObjectWritting()
+        protected override void OnItemObjectWriting()
         {
-            Writting();
+            Writing();
         }
         
         protected override void OnItemObjectWritten()

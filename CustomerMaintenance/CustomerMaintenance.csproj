@@ -36,16 +36,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Semata.DataStoreCLR, Version=1.0.174.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\DataStore\Debug\Semata.DataStoreCLR.dll</HintPath>
+      <HintPath>..\packages\Semata.DataStore.debug.1.0.0\lib\net461\Semata.DataStoreCLR.dll</HintPath>
     </Reference>
     <Reference Include="Semata.DataStoreCLR.ObjectModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\DataStore\DataStoreObjectModel\DataStoreObjectModelCLR\bin\Debug\Semata.DataStoreCLR.ObjectModel.dll</HintPath>
+      <HintPath>..\packages\Semata.DataStore.ObjectModel.debug.1.0.0\lib\net461\Semata.DataStoreCLR.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Semata.DataStoreCLR.ObjectModel.Views, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Semata.DataStore.ObjectModel.Views.debug.1.0.0\lib\net461\Semata.DataStoreCLR.ObjectModel.Views.dll</HintPath>
     </Reference>
     <Reference Include="Semata.DataStoreCLR.Util, Version=1.0.174.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\DataStore\DataStoreUtil\DataStoreUtilCLR\bin\x86\Debug\Semata.DataStoreCLR.Util.dll</HintPath>
+      <HintPath>..\packages\Semata.DataStore.Util.debug.1.0.0\lib\net461\Semata.DataStoreCLR.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -74,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomerMaintenance.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -107,11 +108,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Scripts\jquery-2.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -125,6 +128,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>OrderProcessingViews.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\nugetexample.js" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
