@@ -22,16 +22,15 @@ namespace CustomerMaintenance
     /// </summary>
     public partial class MainWindow : Window
     {
-        ItemObjectViewBindingList<CustomerView> customerList_;
         Customer customer_;
-        OrderProcessingEditView orderProcessing_;
+        OrderProcessingView orderProcessing_;
         string filterAttribute_ = "(No Filter)";
         string filterValue_ = "";
 
         public MainWindow()
         {
             InitializeComponent();
-            orderProcessing_ = new OrderProcessingEditView(null);
+            orderProcessing_ = new OrderProcessingView(null);
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
             FilterAttributeComboBox.Items.Add("(No Filter)");
             FilterAttributeComboBox.Items.Add("Code");

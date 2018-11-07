@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,31 +11,64 @@ using Semata.DataView;
 
 namespace CustomerMaintenance
 {
-    public partial class OrderProcessingView : INotifyPropertyChanged
+    public partial class OrderProcessingView : INotifyPropertyChanged, INotifyStateChanged
     {
         
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler StateChanged;
         
-        protected OrderProcessing dataStore_;
+        protected CustomerMaintenance.OrderProcessing dataStore_;
         
-        ItemObjectViewBindingList<CustomerView> customer_ = null;
-        ItemObjectViewBindingList<OrderView> order_ = null;
-        ItemObjectViewBindingList<OrderLineView> orderLine_ = null;
-        ItemObjectViewBindingList<ProductView> product_ = null;
-        ItemObjectViewBindingList<ProductGroupView> productGroup_ = null;
+        LazyValue<ItemObjectViewList<CustomerView>> customerItems_;
+        LazyValue<ItemObjectViewList<OrderView>> orderItems_;
+        LazyValue<ItemObjectViewList<OrderLineView>> orderLineItems_;
+        LazyValue<ItemObjectViewList<ProductView>> productItems_;
+        LazyValue<ItemObjectViewList<ProductGroupView>> productGroupItems_;
+        
+        partial void OnInitialize();
         
         public OrderProcessingView(PropertyChangedEventDispatcher eventDispatcher)
         {
-            dataStore_ = new OrderProcessing(eventDispatcher);
+            dataStore_ = new CustomerMaintenance.OrderProcessing(eventDispatcher);
+                customerItems_=
+                    new LazyValue<ItemObjectViewList<CustomerView>>(() => 
+                        new ItemObjectViewList<Customer, CustomerView>
+                            (dataStore_.CustomerItems.GetItemObjectSet()
+                            , (x) => new CustomerView(x, false, false)));
+                orderItems_=
+                    new LazyValue<ItemObjectViewList<OrderView>>(() => 
+                        new ItemObjectViewList<Order, OrderView>
+                            (dataStore_.OrderItems.GetItemObjectSet()
+                            , (x) => new OrderView(x, false, false)));
+                orderLineItems_=
+                    new LazyValue<ItemObjectViewList<OrderLineView>>(() => 
+                        new ItemObjectViewList<OrderLine, OrderLineView>
+                            (dataStore_.OrderLineItems.GetItemObjectSet()
+                            , (x) => new OrderLineView(x, false, false)));
+                productItems_=
+                    new LazyValue<ItemObjectViewList<ProductView>>(() => 
+                        new ItemObjectViewList<Product, ProductView>
+                            (dataStore_.ProductItems.GetItemObjectSet()
+                            , (x) => new ProductView(x, false, false)));
+                productGroupItems_=
+                    new LazyValue<ItemObjectViewList<ProductGroupView>>(() => 
+                        new ItemObjectViewList<ProductGroup, ProductGroupView>
+                            (dataStore_.ProductGroupItems.GetItemObjectSet()
+                            , (x) => new ProductGroupView(x, false, false)));
+            OnInitialize();
+        }
+        
+        protected virtual void OnStateChanged(object sender, EventArgs args)
+        {
+            StateChanged?.Invoke(this, args);
         }
         
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, args);
-            }
+            OnStateChanged(sender, new EventArgs());
+            PropertyChanged?.Invoke(this, args);
         }
+        
         public void Open(string path)
         {
             dataStore_.PropertyWritten += OnPropertyChanged;
@@ -47,633 +80,342 @@ namespace CustomerMaintenance
             dataStore_.Close();
         }
         
-        public ItemObjectViewBindingList<CustomerView> CustomerItems
-        {
-            get
-            {
-                if (customer_ == null)
-                {
-                    customer_= ItemObjectViewBindingListFactory.Create(dataStore_.CustomerItems.GetItemObjectSet()
-                                                                                      , (x) => { return new CustomerView(x, false, false); }
-                                                                                      , false);
-                }
-                return customer_;
-            }
-        }
-        public ItemObjectViewBindingList<OrderView> OrderItems
-        {
-            get
-            {
-                if (order_ == null)
-                {
-                    order_= ItemObjectViewBindingListFactory.Create(dataStore_.OrderItems.GetItemObjectSet()
-                                                                                      , (x) => { return new OrderView(x, false, false); }
-                                                                                      , false);
-                }
-                return order_;
-            }
-        }
-        public ItemObjectViewBindingList<OrderLineView> OrderLineItems
-        {
-            get
-            {
-                if (orderLine_ == null)
-                {
-                    orderLine_= ItemObjectViewBindingListFactory.Create(dataStore_.OrderLineItems.GetItemObjectSet()
-                                                                                      , (x) => { return new OrderLineView(x, false, false); }
-                                                                                      , false);
-                }
-                return orderLine_;
-            }
-        }
-        public ItemObjectViewBindingList<ProductView> ProductItems
-        {
-            get
-            {
-                if (product_ == null)
-                {
-                    product_= ItemObjectViewBindingListFactory.Create(dataStore_.ProductItems.GetItemObjectSet()
-                                                                                      , (x) => { return new ProductView(x, false, false); }
-                                                                                      , false);
-                }
-                return product_;
-            }
-        }
-        public ItemObjectViewBindingList<ProductGroupView> ProductGroupItems
-        {
-            get
-            {
-                if (productGroup_ == null)
-                {
-                    productGroup_= ItemObjectViewBindingListFactory.Create(dataStore_.ProductGroupItems.GetItemObjectSet()
-                                                                                      , (x) => { return new ProductGroupView(x, false, false); }
-                                                                                      , false);
-                }
-                return productGroup_;
-            }
-        }
+        public ItemObjectViewList<CustomerView> CustomerItems => customerItems_.Value;
+        
+        public ItemObjectViewList<OrderView> OrderItems => orderItems_.Value;
+        
+        public ItemObjectViewList<OrderLineView> OrderLineItems => orderLineItems_.Value;
+        
+        public ItemObjectViewList<ProductView> ProductItems => productItems_.Value;
+        
+        public ItemObjectViewList<ProductGroupView> ProductGroupItems => productGroupItems_.Value;
+        
 }
 
     public partial class CustomerView : ItemObjectView<CustomerMaintenance.Customer>
     {
     
-        ValueProperty addressLine1_;
-        ValueProperty addressLine2_;
-        ValueProperty addressLine3_;
-        ValueProperty code_;
-        ValueProperty name_;
-        ValueProperty postCode_;
-        ValueProperty postTown_;
-        ItemObjectViewBindingList<OrderView> has_ = null;
+        LazyValue<IReadOnlyList<OrderView>> has_;
+        
+        partial void OnInitialize();
+        
+        private void Initialize()
+        {
+            has_=
+                new LazyValue<IReadOnlyList<OrderView>>(() =>
+                    new ItemObjectViewReadOnlyList<Order, OrderView>
+                        (this.ItemObject.Has.GetItems()
+                         , (x) => { return new OrderView(x, false, false); }));
+            OnInitialize();
+        }
+        
+        public CustomerView() : base()
+        {
+            Initialize();
+        }
+        
         internal CustomerView(CustomerMaintenance.Customer customer, bool usePropertyChanged, bool writeOnEndEdit) : base(customer, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         internal CustomerView(CustomerView customerView, bool usePropertyChanged, bool writeOnEndEdit) : base(customerView, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         
         public object AddressLine1
         {
-            get
-            {
-                if (addressLine1_ == null)
-                {
-                    addressLine1_ = itemObject_.ValueProperties["AddressLine1"];
-                }
-                  return addressLine1_ .RawValue;
-            }
-            set
-            {
-                if (addressLine1_ == null)
-                {
-                    addressLine1_ = itemObject_.ValueProperties["AddressLine1"];
-                }
-                addressLine1_ .Value = value;
-            }
+            get => itemObject_.AddressLine1Property.RawValue;
+            set => itemObject_.AddressLine1Property.Value = value;
         }
         
         public object AddressLine2
         {
-            get
-            {
-                if (addressLine2_ == null)
-                {
-                    addressLine2_ = itemObject_.ValueProperties["AddressLine2"];
-                }
-                  return addressLine2_ .RawValue;
-            }
-            set
-            {
-                if (addressLine2_ == null)
-                {
-                    addressLine2_ = itemObject_.ValueProperties["AddressLine2"];
-                }
-                addressLine2_ .Value = value;
-            }
+            get => itemObject_.AddressLine2Property.RawValue;
+            set => itemObject_.AddressLine2Property.Value = value;
         }
         
         public object AddressLine3
         {
-            get
-            {
-                if (addressLine3_ == null)
-                {
-                    addressLine3_ = itemObject_.ValueProperties["AddressLine3"];
-                }
-                  return addressLine3_ .RawValue;
-            }
-            set
-            {
-                if (addressLine3_ == null)
-                {
-                    addressLine3_ = itemObject_.ValueProperties["AddressLine3"];
-                }
-                addressLine3_ .Value = value;
-            }
+            get => itemObject_.AddressLine3Property.RawValue;
+            set => itemObject_.AddressLine3Property.Value = value;
         }
         
         public object Code
         {
-            get
-            {
-                if (code_ == null)
-                {
-                    code_ = itemObject_.ValueProperties["Code"];
-                }
-                  return code_ .RawValue;
-            }
-            set
-            {
-                if (code_ == null)
-                {
-                    code_ = itemObject_.ValueProperties["Code"];
-                }
-                code_ .Value = value;
-            }
+            get => itemObject_.CodeProperty.RawValue;
+            set => itemObject_.CodeProperty.Value = value;
         }
         
         public object Name
         {
-            get
-            {
-                if (name_ == null)
-                {
-                    name_ = itemObject_.ValueProperties["Name"];
-                }
-                  return name_ .RawValue;
-            }
-            set
-            {
-                if (name_ == null)
-                {
-                    name_ = itemObject_.ValueProperties["Name"];
-                }
-                name_ .Value = value;
-            }
+            get => itemObject_.NameProperty.RawValue;
+            set => itemObject_.NameProperty.Value = value;
         }
         
         public object PostCode
         {
-            get
-            {
-                if (postCode_ == null)
-                {
-                    postCode_ = itemObject_.ValueProperties["PostCode"];
-                }
-                  return postCode_ .RawValue;
-            }
-            set
-            {
-                if (postCode_ == null)
-                {
-                    postCode_ = itemObject_.ValueProperties["PostCode"];
-                }
-                postCode_ .Value = value;
-            }
+            get => itemObject_.PostCodeProperty.RawValue;
+            set => itemObject_.PostCodeProperty.Value = value;
         }
         
         public object PostTown
         {
-            get
-            {
-                if (postTown_ == null)
-                {
-                    postTown_ = itemObject_.ValueProperties["PostTown"];
-                }
-                  return postTown_ .RawValue;
-            }
-            set
-            {
-                if (postTown_ == null)
-                {
-                    postTown_ = itemObject_.ValueProperties["PostTown"];
-                }
-                postTown_ .Value = value;
-            }
+            get => itemObject_.PostTownProperty.RawValue;
+            set => itemObject_.PostTownProperty.Value = value;
         }
-        public ItemObjectViewBindingList<OrderView> Has
-        {
-            get
-            {
-                if (has_ == null)
-                {
-                    has_= ItemObjectViewBindingListFactory.Create(this.ItemObject.Has.GetItemObjectSet()
-                                                                                         , (x) => { return new OrderView(x, false, false); }
-                                                                                         , false);
-                }
-                return has_;
-            }
-        }
+        
+        public IReadOnlyList<OrderView> Has => has_.Value;
     }
     
     public partial class OrderView : ItemObjectView<CustomerMaintenance.Order>
     {
     
-        ValueProperty customerReference_;
-        ValueProperty date_;
-        ValueProperty orderNo_;
-        ItemObjectViewBindingList<CustomerView> by_ = null;
-        ItemObjectViewBindingList<OrderLineView> lines_ = null;
+        LazyValue<IReadOnlyList<CustomerView>> by_;
+        LazyValue<IReadOnlyList<OrderLineView>> lines_;
+        
+        partial void OnInitialize();
+        
+        private void Initialize()
+        {
+            by_=
+                new LazyValue<IReadOnlyList<CustomerView>>(() =>
+                    new ItemObjectViewReadOnlyList<Customer, CustomerView>
+                        (this.ItemObject.By.GetItems()
+                         , (x) => { return new CustomerView(x, false, false); }));
+            lines_=
+                new LazyValue<IReadOnlyList<OrderLineView>>(() =>
+                    new ItemObjectViewReadOnlyList<OrderLine, OrderLineView>
+                        (this.ItemObject.Lines.GetItems()
+                         , (x) => { return new OrderLineView(x, false, false); }));
+            OnInitialize();
+        }
+        
+        public OrderView() : base()
+        {
+            Initialize();
+        }
+        
         internal OrderView(CustomerMaintenance.Order order, bool usePropertyChanged, bool writeOnEndEdit) : base(order, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         internal OrderView(OrderView orderView, bool usePropertyChanged, bool writeOnEndEdit) : base(orderView, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         
         public object CustomerReference
         {
-            get
-            {
-                if (customerReference_ == null)
-                {
-                    customerReference_ = itemObject_.ValueProperties["CustomerReference"];
-                }
-                  return customerReference_ .RawValue;
-            }
-            set
-            {
-                if (customerReference_ == null)
-                {
-                    customerReference_ = itemObject_.ValueProperties["CustomerReference"];
-                }
-                customerReference_ .Value = value;
-            }
+            get => itemObject_.CustomerReferenceProperty.RawValue;
+            set => itemObject_.CustomerReferenceProperty.Value = value;
         }
         
         public object Date
         {
-            get
-            {
-                if (date_ == null)
-                {
-                    date_ = itemObject_.ValueProperties["Date"];
-                }
-                  return date_ .RawValue;
-            }
-            set
-            {
-                if (date_ == null)
-                {
-                    date_ = itemObject_.ValueProperties["Date"];
-                }
-                date_ .Value = value;
-            }
+            get => itemObject_.DateProperty.RawValue;
+            set => itemObject_.DateProperty.Value = value;
         }
         
         public object OrderNo
         {
-            get
-            {
-                if (orderNo_ == null)
-                {
-                    orderNo_ = itemObject_.ValueProperties["OrderNo"];
-                }
-                  return orderNo_ .RawValue;
-            }
-            set
-            {
-                if (orderNo_ == null)
-                {
-                    orderNo_ = itemObject_.ValueProperties["OrderNo"];
-                }
-                orderNo_ .Value = value;
-            }
+            get => itemObject_.OrderNoProperty.RawValue;
+            set => itemObject_.OrderNoProperty.Value = value;
         }
-        public ItemObjectViewBindingList<CustomerView> By
-        {
-            get
-            {
-                if (by_ == null)
-                {
-                    by_= ItemObjectViewBindingListFactory.Create(this.ItemObject.By.GetItemObjectSet()
-                                                                                         , (x) => { return new CustomerView(x, false, false); }
-                                                                                         , false);
-                }
-                return by_;
-            }
-        }
-        public ItemObjectViewBindingList<OrderLineView> Lines
-        {
-            get
-            {
-                if (lines_ == null)
-                {
-                    lines_= ItemObjectViewBindingListFactory.Create(this.ItemObject.Lines.GetItemObjectSet()
-                                                                                         , (x) => { return new OrderLineView(x, false, false); }
-                                                                                         , false);
-                }
-                return lines_;
-            }
-        }
+        
+        public IReadOnlyList<CustomerView> By => by_.Value;
+        
+        public IReadOnlyList<OrderLineView> Lines => lines_.Value;
     }
     
     public partial class OrderLineView : ItemObjectView<CustomerMaintenance.OrderLine>
     {
     
-        ValueProperty quantity_;
-        ItemObjectViewBindingList<ProductView> for_ = null;
-        ItemObjectViewBindingList<OrderView> on_ = null;
+        LazyValue<IReadOnlyList<ProductView>> for_;
+        
+        partial void OnInitialize();
+        
+        private void Initialize()
+        {
+            for_=
+                new LazyValue<IReadOnlyList<ProductView>>(() =>
+                    new ItemObjectViewReadOnlyList<Product, ProductView>
+                        (this.ItemObject.For.GetItems()
+                         , (x) => { return new ProductView(x, false, false); }));
+            OnInitialize();
+        }
+        
+        public OrderLineView() : base()
+        {
+            Initialize();
+        }
+        
         internal OrderLineView(CustomerMaintenance.OrderLine orderLine, bool usePropertyChanged, bool writeOnEndEdit) : base(orderLine, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         internal OrderLineView(OrderLineView orderLineView, bool usePropertyChanged, bool writeOnEndEdit) : base(orderLineView, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         
         public object Quantity
         {
+            get => itemObject_.QuantityProperty.RawValue;
+            set => itemObject_.QuantityProperty.Value = value;
+        }
+        
+        public OrderView On
+        {
             get
             {
-                if (quantity_ == null)
-                {
-                    quantity_ = itemObject_.ValueProperties["Quantity"];
-                }
-                  return quantity_ .RawValue;
+                return itemObject_.On == null ? null : new OrderView(itemObject_.On, false, false);
             }
             set
             {
-                if (quantity_ == null)
-                {
-                    quantity_ = itemObject_.ValueProperties["Quantity"];
-                }
-                quantity_ .Value = value;
+                itemObject_.On = value == null ? null : value.ItemObject;
             }
         }
-        public ItemObjectViewBindingList<ProductView> For
-        {
-            get
-            {
-                if (for_ == null)
-                {
-                    for_= ItemObjectViewBindingListFactory.Create(this.ItemObject.For.GetItemObjectSet()
-                                                                                         , (x) => { return new ProductView(x, false, false); }
-                                                                                         , false);
-                }
-                return for_;
-            }
-        }
-        public ItemObjectViewBindingList<OrderView> On
-        {
-            get
-            {
-                if (on_ == null)
-                {
-                    on_= ItemObjectViewBindingListFactory.Create(this.ItemObject.On.GetItemObjectSet()
-                                                                                         , (x) => { return new OrderView(x, false, false); }
-                                                                                         , false);
-                }
-                return on_;
-            }
-        }
+        
+        public IReadOnlyList<ProductView> For => for_.Value;
     }
     
     public partial class ProductView : ItemObjectView<CustomerMaintenance.Product>
     {
     
-        ValueProperty code_;
-        ValueProperty description_;
-        ValueProperty price_;
-        ValueProperty stockLevel_;
-        ItemObjectViewBindingList<ProductGroupView> group_ = null;
-        ItemObjectViewBindingList<ProductGroupView> is_ = null;
-        ItemObjectViewBindingList<OrderLineView> orderedOn_ = null;
+        LazyValue<IReadOnlyList<ProductGroupView>> group_;
+        LazyValue<IReadOnlyList<ProductGroupView>> is_;
+        LazyValue<IReadOnlyList<OrderLineView>> orderedOn_;
+        
+        partial void OnInitialize();
+        
+        private void Initialize()
+        {
+            group_=
+                new LazyValue<IReadOnlyList<ProductGroupView>>(() =>
+                    new ItemObjectViewReadOnlyList<ProductGroup, ProductGroupView>
+                        (this.ItemObject.Group.GetItems()
+                         , (x) => { return new ProductGroupView(x, false, false); }));
+            is_=
+                new LazyValue<IReadOnlyList<ProductGroupView>>(() =>
+                    new ItemObjectViewReadOnlyList<ProductGroup, ProductGroupView>
+                        (this.ItemObject.Is.GetItems()
+                         , (x) => { return new ProductGroupView(x, false, false); }));
+            orderedOn_=
+                new LazyValue<IReadOnlyList<OrderLineView>>(() =>
+                    new ItemObjectViewReadOnlyList<OrderLine, OrderLineView>
+                        (this.ItemObject.OrderedOn.GetItems()
+                         , (x) => { return new OrderLineView(x, false, false); }));
+            OnInitialize();
+        }
+        
+        public ProductView() : base()
+        {
+            Initialize();
+        }
+        
         internal ProductView(CustomerMaintenance.Product product, bool usePropertyChanged, bool writeOnEndEdit) : base(product, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         internal ProductView(ProductView productView, bool usePropertyChanged, bool writeOnEndEdit) : base(productView, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         
         public object Code
         {
-            get
-            {
-                if (code_ == null)
-                {
-                    code_ = itemObject_.ValueProperties["Code"];
-                }
-                  return code_ .RawValue;
-            }
-            set
-            {
-                if (code_ == null)
-                {
-                    code_ = itemObject_.ValueProperties["Code"];
-                }
-                code_ .Value = value;
-            }
+            get => itemObject_.CodeProperty.RawValue;
+            set => itemObject_.CodeProperty.Value = value;
         }
         
         public object Description
         {
-            get
-            {
-                if (description_ == null)
-                {
-                    description_ = itemObject_.ValueProperties["Description"];
-                }
-                  return description_ .RawValue;
-            }
-            set
-            {
-                if (description_ == null)
-                {
-                    description_ = itemObject_.ValueProperties["Description"];
-                }
-                description_ .Value = value;
-            }
+            get => itemObject_.DescriptionProperty.RawValue;
+            set => itemObject_.DescriptionProperty.Value = value;
         }
         
         public object Price
         {
-            get
-            {
-                if (price_ == null)
-                {
-                    price_ = itemObject_.ValueProperties["Price"];
-                }
-                  return price_ .RawValue;
-            }
-            set
-            {
-                if (price_ == null)
-                {
-                    price_ = itemObject_.ValueProperties["Price"];
-                }
-                price_ .Value = value;
-            }
+            get => itemObject_.PriceProperty.RawValue;
+            set => itemObject_.PriceProperty.Value = value;
         }
         
         public object StockLevel
         {
-            get
-            {
-                if (stockLevel_ == null)
-                {
-                    stockLevel_ = itemObject_.ValueProperties["StockLevel"];
-                }
-                  return stockLevel_ .RawValue;
-            }
-            set
-            {
-                if (stockLevel_ == null)
-                {
-                    stockLevel_ = itemObject_.ValueProperties["StockLevel"];
-                }
-                stockLevel_ .Value = value;
-            }
+            get => itemObject_.StockLevelProperty.RawValue;
+            set => itemObject_.StockLevelProperty.Value = value;
         }
-        public ItemObjectViewBindingList<ProductGroupView> Group
-        {
-            get
-            {
-                if (group_ == null)
-                {
-                    group_= ItemObjectViewBindingListFactory.Create(this.ItemObject.Group.GetItemObjectSet()
-                                                                                         , (x) => { return new ProductGroupView(x, false, false); }
-                                                                                         , false);
-                }
-                return group_;
-            }
-        }
-        public ItemObjectViewBindingList<ProductGroupView> Is
-        {
-            get
-            {
-                if (is_ == null)
-                {
-                    is_= ItemObjectViewBindingListFactory.Create(this.ItemObject.Is.GetItemObjectSet()
-                                                                                         , (x) => { return new ProductGroupView(x, false, false); }
-                                                                                         , false);
-                }
-                return is_;
-            }
-        }
-        public ItemObjectViewBindingList<OrderLineView> OrderedOn
-        {
-            get
-            {
-                if (orderedOn_ == null)
-                {
-                    orderedOn_= ItemObjectViewBindingListFactory.Create(this.ItemObject.OrderedOn.GetItemObjectSet()
-                                                                                         , (x) => { return new OrderLineView(x, false, false); }
-                                                                                         , false);
-                }
-                return orderedOn_;
-            }
-        }
+        
+        public IReadOnlyList<ProductGroupView> Group => group_.Value;
+        
+        public IReadOnlyList<ProductGroupView> Is => is_.Value;
+        
+        public IReadOnlyList<OrderLineView> OrderedOn => orderedOn_.Value;
     }
     
     public partial class ProductGroupView : ItemObjectView<CustomerMaintenance.ProductGroup>
     {
     
-        ValueProperty description_;
-        ValueProperty name_;
-        ItemObjectViewBindingList<ProductView> contains_ = null;
-        ItemObjectViewBindingList<ProductGroupView> parentGroup_ = null;
+        LazyValue<IReadOnlyList<ProductView>> contains_;
+        LazyValue<IReadOnlyList<ProductGroupView>> parentGroup_;
+        
+        partial void OnInitialize();
+        
+        private void Initialize()
+        {
+            contains_=
+                new LazyValue<IReadOnlyList<ProductView>>(() =>
+                    new ItemObjectViewReadOnlyList<Product, ProductView>
+                        (this.ItemObject.Contains.GetItems()
+                         , (x) => { return new ProductView(x, false, false); }));
+            parentGroup_=
+                new LazyValue<IReadOnlyList<ProductGroupView>>(() =>
+                    new ItemObjectViewReadOnlyList<ProductGroup, ProductGroupView>
+                        (this.ItemObject.ParentGroup.GetItems()
+                         , (x) => { return new ProductGroupView(x, false, false); }));
+            OnInitialize();
+        }
+        
+        public ProductGroupView() : base()
+        {
+            Initialize();
+        }
+        
         internal ProductGroupView(CustomerMaintenance.ProductGroup productGroup, bool usePropertyChanged, bool writeOnEndEdit) : base(productGroup, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         internal ProductGroupView(ProductGroupView productGroupView, bool usePropertyChanged, bool writeOnEndEdit) : base(productGroupView, usePropertyChanged, writeOnEndEdit)
         {
+            Initialize();
         }
         
         
         public object Description
         {
-            get
-            {
-                if (description_ == null)
-                {
-                    description_ = itemObject_.ValueProperties["Description"];
-                }
-                  return description_ .RawValue;
-            }
-            set
-            {
-                if (description_ == null)
-                {
-                    description_ = itemObject_.ValueProperties["Description"];
-                }
-                description_ .Value = value;
-            }
+            get => itemObject_.DescriptionProperty.RawValue;
+            set => itemObject_.DescriptionProperty.Value = value;
         }
         
         public object Name
         {
-            get
-            {
-                if (name_ == null)
-                {
-                    name_ = itemObject_.ValueProperties["Name"];
-                }
-                  return name_ .RawValue;
-            }
-            set
-            {
-                if (name_ == null)
-                {
-                    name_ = itemObject_.ValueProperties["Name"];
-                }
-                name_ .Value = value;
-            }
+            get => itemObject_.NameProperty.RawValue;
+            set => itemObject_.NameProperty.Value = value;
         }
-        public ItemObjectViewBindingList<ProductView> Contains
-        {
-            get
-            {
-                if (contains_ == null)
-                {
-                    contains_= ItemObjectViewBindingListFactory.Create(this.ItemObject.Contains.GetItemObjectSet()
-                                                                                         , (x) => { return new ProductView(x, false, false); }
-                                                                                         , false);
-                }
-                return contains_;
-            }
-        }
-        public ItemObjectViewBindingList<ProductGroupView> ParentGroup
-        {
-            get
-            {
-                if (parentGroup_ == null)
-                {
-                    parentGroup_= ItemObjectViewBindingListFactory.Create(this.ItemObject.ParentGroup.GetItemObjectSet()
-                                                                                         , (x) => { return new ProductGroupView(x, false, false); }
-                                                                                         , false);
-                }
-                return parentGroup_;
-            }
-        }
+        
+        public IReadOnlyList<ProductView> Contains => contains_.Value;
+        
+        public IReadOnlyList<ProductGroupView> ParentGroup => parentGroup_.Value;
     }
     
 }

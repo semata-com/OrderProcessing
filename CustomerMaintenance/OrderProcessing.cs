@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using Semata.DataStore;
 using Semata.DataStore.ObjectModel;
-using System.ComponentModel;
 
 namespace CustomerMaintenance
 {
@@ -21,14 +17,160 @@ namespace CustomerMaintenance
         {
         }
         
+        public void Create(string path)
+        {
+            base.CreateInstance(path, "OrderProcessing");
+            ItemType itemType;
+            
+            //    Customer
+            
+            itemType = connection_.AddItemType("Customer", "", "");
+            itemType.AddAttributeType("AddressLine1", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("AddressLine2", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("AddressLine3", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Code", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Name", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("PostCode", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("PostTown", "", "", Semata.DataStore.ValueType.String);
+            
+            //    Order
+            
+            itemType = connection_.AddItemType("Order", "", "");
+            itemType.AddAttributeType("CustomerReference", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Date", "", "", Semata.DataStore.ValueType.Date);
+            itemType.AddAttributeType("OrderNo", "", "", Semata.DataStore.ValueType.String);
+            
+            //    OrderLine
+            
+            itemType = connection_.AddItemType("OrderLine", "", "");
+            itemType.AddAttributeType("Quantity", "", "", Semata.DataStore.ValueType.Integer);
+            
+            //    Product
+            
+            itemType = connection_.AddItemType("Product", "", "");
+            itemType.AddAttributeType("Code", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Description", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Price", "", "", Semata.DataStore.ValueType.Decimal);
+            itemType.AddAttributeType("StockLevel", "", "", Semata.DataStore.ValueType.Integer);
+            
+            //    ProductGroup
+            
+            itemType = connection_.AddItemType("ProductGroup", "", "");
+            itemType.AddAttributeType("Description", "", "", Semata.DataStore.ValueType.String);
+            itemType.AddAttributeType("Name", "", "", Semata.DataStore.ValueType.String);
+            
+            ItemType leftItemType;
+            ItemType rightItemType;
+            AssociationTypePair pair;
+            leftItemType = connection_.GetItemType("Customer");
+            rightItemType = connection_.GetItemType("Order");
+            pair = leftItemType.AddAssociationType("Has"
+                                                   ,""
+                                                   ,""
+                                                   , rightItemType
+                                                   ,"By"
+                                                   ,""
+                                                   ,"");
+            leftItemType = connection_.GetItemType("Order");
+            rightItemType = connection_.GetItemType("OrderLine");
+            pair = leftItemType.AddAssociationType("Lines"
+                                                   ,""
+                                                   ,""
+                                                   , rightItemType
+                                                   ,"On"
+                                                   ,""
+                                                   ,"[property]");
+            leftItemType = connection_.GetItemType("Product");
+            rightItemType = connection_.GetItemType("OrderLine");
+            pair = leftItemType.AddAssociationType("OrderedOn"
+                                                   ,""
+                                                   ,""
+                                                   , rightItemType
+                                                   ,"For"
+                                                   ,""
+                                                   ,"");
+            leftItemType = connection_.GetItemType("ProductGroup");
+            rightItemType = connection_.GetItemType("Product");
+            pair = leftItemType.AddAssociationType("Contains"
+                                                   ,""
+                                                   ,""
+                                                   , rightItemType
+                                                   ,"Is"
+                                                   ,""
+                                                   ,"");
+            leftItemType = connection_.GetItemType("ProductGroup");
+            rightItemType = connection_.GetItemType("Product");
+            pair = leftItemType.AddAssociationType("SubGroups"
+                                                   ,""
+                                                   ,""
+                                                   , rightItemType
+                                                   ,"Group"
+                                                   ,""
+                                                   ,"");
+            rightItemType = connection_.GetItemType("ProductGroup");
+            pair.AssociationType.AddAssociate(rightItemType
+                                              ,"ParentGroup"
+                                              ,""
+                                              ,"");
+            base.CloseInstance();
+        }
+        
         public void Open(string path)
         {
             base.OpenInstance(path);
-            SetActivator("Customer", (initializer) => new Customer(initializer));
-            SetActivator("Order", (initializer) => new Order(initializer));
-            SetActivator("OrderLine", (initializer) => new OrderLine(initializer));
-            SetActivator("Product", (initializer) => new Product(initializer));
-            SetActivator("ProductGroup", (initializer) => new ProductGroup(initializer));
+            
+            //    Customer
+            
+            ItemObjectDefinition CustomerDefinition = new ItemObjectDefinition();
+            CustomerDefinition.AddAttributeProperty("AddressLine1", x => (x as Customer).AddressLine1Property);
+            CustomerDefinition.AddAttributeProperty("AddressLine2", x => (x as Customer).AddressLine2Property);
+            CustomerDefinition.AddAttributeProperty("AddressLine3", x => (x as Customer).AddressLine3Property);
+            CustomerDefinition.AddAttributeProperty("Code", x => (x as Customer).CodeProperty);
+            CustomerDefinition.AddAttributeProperty("Name", x => (x as Customer).NameProperty);
+            CustomerDefinition.AddAttributeProperty("PostCode", x => (x as Customer).PostCodeProperty);
+            CustomerDefinition.AddAttributeProperty("PostTown", x => (x as Customer).PostTownProperty);
+            CustomerDefinition.AddAssociation("Has", "Has", x => (x as Customer).Has);
+            SetActivator("Customer", (initializer) => new Customer(initializer), CustomerDefinition);
+            
+            //    Order
+            
+            ItemObjectDefinition OrderDefinition = new ItemObjectDefinition();
+            OrderDefinition.AddAttributeProperty("CustomerReference", x => (x as Order).CustomerReferenceProperty);
+            OrderDefinition.AddAttributeProperty("Date", x => (x as Order).DateProperty);
+            OrderDefinition.AddAttributeProperty("OrderNo", x => (x as Order).OrderNoProperty);
+            OrderDefinition.AddAssociation("By", "By", x => (x as Order).By);
+            OrderDefinition.AddAssociation("Lines", "Lines", x => (x as Order).Lines);
+            SetActivator("Order", (initializer) => new Order(initializer), OrderDefinition);
+            
+            //    OrderLine
+            
+            ItemObjectDefinition OrderLineDefinition = new ItemObjectDefinition();
+            OrderLineDefinition.AddAttributeProperty("Quantity", x => (x as OrderLine).QuantityProperty);
+            OrderLineDefinition.AddAssociationProperty("On", "On", x => (x as OrderLine).OnProperty);
+            OrderLineDefinition.AddAssociation("For", "For", x => (x as OrderLine).For);
+            SetActivator("OrderLine", (initializer) => new OrderLine(initializer), OrderLineDefinition);
+            
+            //    Product
+            
+            ItemObjectDefinition ProductDefinition = new ItemObjectDefinition();
+            ProductDefinition.AddAttributeProperty("Code", x => (x as Product).CodeProperty);
+            ProductDefinition.AddAttributeProperty("Description", x => (x as Product).DescriptionProperty);
+            ProductDefinition.AddAttributeProperty("Price", x => (x as Product).PriceProperty);
+            ProductDefinition.AddAttributeProperty("StockLevel", x => (x as Product).StockLevelProperty);
+            ProductDefinition.AddAssociation("Group", "Group", x => (x as Product).Group);
+            ProductDefinition.AddAssociation("Is", "Is", x => (x as Product).Is);
+            ProductDefinition.AddAssociation("OrderedOn", "OrderedOn", x => (x as Product).OrderedOn);
+            SetActivator("Product", (initializer) => new Product(initializer), ProductDefinition);
+            
+            //    ProductGroup
+            
+            ItemObjectDefinition ProductGroupDefinition = new ItemObjectDefinition();
+            ProductGroupDefinition.AddAttributeProperty("Description", x => (x as ProductGroup).DescriptionProperty);
+            ProductGroupDefinition.AddAttributeProperty("Name", x => (x as ProductGroup).NameProperty);
+            ProductGroupDefinition.AddAssociation("Contains", "Contains", x => (x as ProductGroup).Contains);
+            ProductGroupDefinition.AddAssociation("ParentGroup", "ParentGroup", x => (x as ProductGroup).ParentGroup);
+            ProductGroupDefinition.AddAssociation("SubGroups", "SubGroups", x => (x as ProductGroup).SubGroups);
+            SetActivator("ProductGroup", (initializer) => new ProductGroup(initializer), ProductGroupDefinition);
             CustomerItems = new ItemObjects<OrderProcessing, Customer>(connection_.GetItemType("Customer"), this, "CustomerItems");
             OrderItems = new ItemObjects<OrderProcessing, Order>(connection_.GetItemType("Order"), this, "OrderItems");
             OrderLineItems = new ItemObjects<OrderProcessing, OrderLine>(connection_.GetItemType("OrderLine"), this, "OrderLineItems");
@@ -45,255 +187,205 @@ namespace CustomerMaintenance
     
     public partial class Customer : ItemObject<OrderProcessing>
     {
-        private AttributeProperty<OrderProcessing, string> AddressLine1Property { get; set;}
-        private AttributeProperty<OrderProcessing, string> AddressLine2Property { get; set;}
-        private AttributeProperty<OrderProcessing, string> AddressLine3Property { get; set;}
-        private AttributeProperty<OrderProcessing, string> CodeProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> NameProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> PostCodeProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> PostTownProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> AddressLine1Property { get; set;}
+        public AttributeProperty<OrderProcessing, string> AddressLine2Property { get; set;}
+        public AttributeProperty<OrderProcessing, string> AddressLine3Property { get; set;}
+        public AttributeProperty<OrderProcessing, string> CodeProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> NameProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> PostCodeProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> PostTownProperty { get; set;}
         
         
         public Association<OrderProcessing, Order> Has { get; private set;}
         
         internal Customer(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            AddressLine1Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine1", "AddressLine1", false, false, (x) => OnAddressLine1Changed(x), (x) => {return OnAddressLine1Writing(x);});
-            AddAttributeProperty(AddressLine1Property);
-            AddressLine2Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine2", "AddressLine2", false, false, (x) => OnAddressLine2Changed(x), (x) => {return OnAddressLine2Writing(x);});
-            AddAttributeProperty(AddressLine2Property);
-            AddressLine3Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine3", "AddressLine3", false, false, (x) => OnAddressLine3Changed(x), (x) => {return OnAddressLine3Writing(x);});
-            AddAttributeProperty(AddressLine3Property);
-            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWriting(x);});
-            AddAttributeProperty(CodeProperty);
-            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWriting(x);});
-            AddAttributeProperty(NameProperty);
-            PostCodeProperty = new AttributeProperty<OrderProcessing, string>(this, "PostCode", "PostCode", false, false, (x) => OnPostCodeChanged(x), (x) => {return OnPostCodeWriting(x);});
-            AddAttributeProperty(PostCodeProperty);
-            PostTownProperty = new AttributeProperty<OrderProcessing, string>(this, "PostTown", "PostTown", false, false, (x) => OnPostTownChanged(x), (x) => {return OnPostTownWriting(x);});
-            AddAttributeProperty(PostTownProperty);
+            AddressLine1Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine1", "AddressLine1", false, false, (x) => AddressLine1Changed(x), (x) => {return AddressLine1Writing(x);});
+            AddressLine2Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine2", "AddressLine2", false, false, (x) => AddressLine2Changed(x), (x) => {return AddressLine2Writing(x);});
+            AddressLine3Property = new AttributeProperty<OrderProcessing, string>(this, "AddressLine3", "AddressLine3", false, false, (x) => AddressLine3Changed(x), (x) => {return AddressLine3Writing(x);});
+            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => CodeChanged(x), (x) => {return CodeWriting(x);});
+            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => NameChanged(x), (x) => {return NameWriting(x);});
+            PostCodeProperty = new AttributeProperty<OrderProcessing, string>(this, "PostCode", "PostCode", false, false, (x) => PostCodeChanged(x), (x) => {return PostCodeWriting(x);});
+            PostTownProperty = new AttributeProperty<OrderProcessing, string>(this, "PostTown", "PostTown", false, false, (x) => PostTownChanged(x), (x) => {return PostTownWriting(x);});
             Has = new Association<OrderProcessing, Order>(this, "Has", "Has", "");
-            AddAssociation("Has", Has);
         }
-        partial void AddressLine1Changed(object value);
-        partial void AddressLine1Writing(ref object value);
-        partial void AddressLine2Changed(object value);
-        partial void AddressLine2Writing(ref object value);
-        partial void AddressLine3Changed(object value);
-        partial void AddressLine3Writing(ref object value);
-        partial void CodeChanged(object value);
-        partial void CodeWriting(ref object value);
-        partial void NameChanged(object value);
-        partial void NameWriting(ref object value);
-        partial void PostCodeChanged(object value);
-        partial void PostCodeWriting(ref object value);
-        partial void PostTownChanged(object value);
-        partial void PostTownWriting(ref object value);
-        partial void Validate();
-        partial void CanDelete(ItemObjectDeleteResult result);
-        partial void Deleting(ItemObjectDeleteResult result);
-        partial void Created();
-        partial void Writing();
-        partial void Written();
+        partial void OnAddressLine1Changed(object value);
+        partial void OnAddressLine1Writing(ref object value);
+        partial void OnAddressLine2Changed(object value);
+        partial void OnAddressLine2Writing(ref object value);
+        partial void OnAddressLine3Changed(object value);
+        partial void OnAddressLine3Writing(ref object value);
+        partial void OnCodeChanged(object value);
+        partial void OnCodeWriting(ref object value);
+        partial void OnNameChanged(object value);
+        partial void OnNameWriting(ref object value);
+        partial void OnPostCodeChanged(object value);
+        partial void OnPostCodeWriting(ref object value);
+        partial void OnPostTownChanged(object value);
+        partial void OnPostTownWriting(ref object value);
+        partial void OnValidate();
+        partial void OnCanDelete(ItemObjectDeleteResult result);
+        partial void OnDeleting(ItemObjectDeleteResult result);
+        partial void OnCreated();
+        partial void OnWriting();
+        partial void OnWritten();
         
-        protected void OnAddressLine1Changed(object value)
+        protected void AddressLine1Changed(object value)
         {
-            AddressLine1Changed(value);
+            OnAddressLine1Changed(value);
         }
         
-        protected object OnAddressLine1Writing(object value)
+        protected object AddressLine1Writing(object value)
         {
-            AddressLine1Writing(ref value);
+            OnAddressLine1Writing(ref value);
             return value;
         }
         
-        protected void OnAddressLine2Changed(object value)
+        protected void AddressLine2Changed(object value)
         {
-            AddressLine2Changed(value);
+            OnAddressLine2Changed(value);
         }
         
-        protected object OnAddressLine2Writing(object value)
+        protected object AddressLine2Writing(object value)
         {
-            AddressLine2Writing(ref value);
+            OnAddressLine2Writing(ref value);
             return value;
         }
         
-        protected void OnAddressLine3Changed(object value)
+        protected void AddressLine3Changed(object value)
         {
-            AddressLine3Changed(value);
+            OnAddressLine3Changed(value);
         }
         
-        protected object OnAddressLine3Writing(object value)
+        protected object AddressLine3Writing(object value)
         {
-            AddressLine3Writing(ref value);
+            OnAddressLine3Writing(ref value);
             return value;
         }
         
-        protected void OnCodeChanged(object value)
+        protected void CodeChanged(object value)
         {
-            CodeChanged(value);
+            OnCodeChanged(value);
         }
         
-        protected object OnCodeWriting(object value)
+        protected object CodeWriting(object value)
         {
-            CodeWriting(ref value);
+            OnCodeWriting(ref value);
             return value;
         }
         
-        protected void OnNameChanged(object value)
+        protected void NameChanged(object value)
         {
-            NameChanged(value);
+            OnNameChanged(value);
         }
         
-        protected object OnNameWriting(object value)
+        protected object NameWriting(object value)
         {
-            NameWriting(ref value);
+            OnNameWriting(ref value);
             return value;
         }
         
-        protected void OnPostCodeChanged(object value)
+        protected void PostCodeChanged(object value)
         {
-            PostCodeChanged(value);
+            OnPostCodeChanged(value);
         }
         
-        protected object OnPostCodeWriting(object value)
+        protected object PostCodeWriting(object value)
         {
-            PostCodeWriting(ref value);
+            OnPostCodeWriting(ref value);
             return value;
         }
         
-        protected void OnPostTownChanged(object value)
+        protected void PostTownChanged(object value)
         {
-            PostTownChanged(value);
+            OnPostTownChanged(value);
         }
         
-        protected object OnPostTownWriting(object value)
+        protected object PostTownWriting(object value)
         {
-            PostTownWriting(ref value);
+            OnPostTownWriting(ref value);
             return value;
         }
         
         protected override void OnItemObjectValidate()
         {
-            Validate();
+            OnValidate();
         }
         
         protected override void OnItemObjectCanDelete(ItemObjectDeleteResult result)
         {
-            CanDelete(result);
+            OnCanDelete(result);
         }
         
         protected override void OnItemObjectDeleting(ItemObjectDeleteResult result)
         {
-            Deleting(result);
+            OnDeleting(result);
         }
         
         protected override void OnItemObjectCreated()
         {
-            Created();
+            OnCreated();
         }
         
         protected override void OnItemObjectWriting()
         {
-            Writing();
+            OnWriting();
         }
         
         protected override void OnItemObjectWritten()
         {
-            Written();
+            OnWritten();
         }
         
         
         public string AddressLine1
         {
-            get
-            {
-                return (string)AddressLine1Property.Value;
-            }
-            set
-            {
-                AddressLine1Property.Value = value;
-            }
+            get => (string)AddressLine1Property.Value;
+            set => AddressLine1Property.Value = value;
         }
         
         public string AddressLine2
         {
-            get
-            {
-                return (string)AddressLine2Property.Value;
-            }
-            set
-            {
-                AddressLine2Property.Value = value;
-            }
+            get => (string)AddressLine2Property.Value;
+            set => AddressLine2Property.Value = value;
         }
         
         public string AddressLine3
         {
-            get
-            {
-                return (string)AddressLine3Property.Value;
-            }
-            set
-            {
-                AddressLine3Property.Value = value;
-            }
+            get => (string)AddressLine3Property.Value;
+            set => AddressLine3Property.Value = value;
         }
         
         public string Code
         {
-            get
-            {
-                return (string)CodeProperty.Value;
-            }
-            set
-            {
-                CodeProperty.Value = value;
-            }
+            get => (string)CodeProperty.Value;
+            set => CodeProperty.Value = value;
         }
         
         public string Name
         {
-            get
-            {
-                return (string)NameProperty.Value;
-            }
-            set
-            {
-                NameProperty.Value = value;
-            }
+            get => (string)NameProperty.Value;
+            set => NameProperty.Value = value;
         }
         
         public string PostCode
         {
-            get
-            {
-                return (string)PostCodeProperty.Value;
-            }
-            set
-            {
-                PostCodeProperty.Value = value;
-            }
+            get => (string)PostCodeProperty.Value;
+            set => PostCodeProperty.Value = value;
         }
         
         public string PostTown
         {
-            get
-            {
-                return (string)PostTownProperty.Value;
-            }
-            set
-            {
-                PostTownProperty.Value = value;
-            }
+            get => (string)PostTownProperty.Value;
+            set => PostTownProperty.Value = value;
         }
     }
     
     public partial class Order : ItemObject<OrderProcessing>
     {
-        private AttributeProperty<OrderProcessing, string> CustomerReferenceProperty { get; set;}
-        private AttributeProperty<OrderProcessing, DateTime> DateProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> OrderNoProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> CustomerReferenceProperty { get; set;}
+        public AttributeProperty<OrderProcessing, DateTime> DateProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> OrderNoProperty { get; set;}
         
         
         public Association<OrderProcessing, Customer> By { get; private set;}
@@ -301,218 +393,205 @@ namespace CustomerMaintenance
         
         internal Order(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            CustomerReferenceProperty = new AttributeProperty<OrderProcessing, string>(this, "CustomerReference", "CustomerReference", false, false, (x) => OnCustomerReferenceChanged(x), (x) => {return OnCustomerReferenceWriting(x);});
-            AddAttributeProperty(CustomerReferenceProperty);
-            DateProperty = new AttributeProperty<OrderProcessing, DateTime>(this, "Date", "Date", false, false, (x) => OnDateChanged(x), (x) => {return OnDateWriting(x);});
-            AddAttributeProperty(DateProperty);
-            OrderNoProperty = new AttributeProperty<OrderProcessing, string>(this, "OrderNo", "OrderNo", false, false, (x) => OnOrderNoChanged(x), (x) => {return OnOrderNoWriting(x);});
-            AddAttributeProperty(OrderNoProperty);
+            CustomerReferenceProperty = new AttributeProperty<OrderProcessing, string>(this, "CustomerReference", "CustomerReference", false, false, (x) => CustomerReferenceChanged(x), (x) => {return CustomerReferenceWriting(x);});
+            DateProperty = new AttributeProperty<OrderProcessing, DateTime>(this, "Date", "Date", false, false, (x) => DateChanged(x), (x) => {return DateWriting(x);});
+            OrderNoProperty = new AttributeProperty<OrderProcessing, string>(this, "OrderNo", "OrderNo", false, false, (x) => OrderNoChanged(x), (x) => {return OrderNoWriting(x);});
             By = new Association<OrderProcessing, Customer>(this, "By", "By", "");
-            AddAssociation("By", By);
-            Lines = new Association<OrderProcessing, OrderLine>(this, "Lines", "Lines", "");
-            AddAssociation("Lines", Lines);
+            Lines = new Association<OrderProcessing, OrderLine>(this, "Lines", "Lines", "On");
         }
-        partial void CustomerReferenceChanged(object value);
-        partial void CustomerReferenceWriting(ref object value);
-        partial void DateChanged(object value);
-        partial void DateWriting(ref object value);
-        partial void OrderNoChanged(object value);
-        partial void OrderNoWriting(ref object value);
-        partial void Validate();
-        partial void CanDelete(ItemObjectDeleteResult result);
-        partial void Deleting(ItemObjectDeleteResult result);
-        partial void Created();
-        partial void Writing();
-        partial void Written();
+        partial void OnCustomerReferenceChanged(object value);
+        partial void OnCustomerReferenceWriting(ref object value);
+        partial void OnDateChanged(object value);
+        partial void OnDateWriting(ref object value);
+        partial void OnOrderNoChanged(object value);
+        partial void OnOrderNoWriting(ref object value);
+        partial void OnValidate();
+        partial void OnCanDelete(ItemObjectDeleteResult result);
+        partial void OnDeleting(ItemObjectDeleteResult result);
+        partial void OnCreated();
+        partial void OnWriting();
+        partial void OnWritten();
         
-        protected void OnCustomerReferenceChanged(object value)
+        protected void CustomerReferenceChanged(object value)
         {
-            CustomerReferenceChanged(value);
+            OnCustomerReferenceChanged(value);
         }
         
-        protected object OnCustomerReferenceWriting(object value)
+        protected object CustomerReferenceWriting(object value)
         {
-            CustomerReferenceWriting(ref value);
+            OnCustomerReferenceWriting(ref value);
             return value;
         }
         
-        protected void OnDateChanged(object value)
+        protected void DateChanged(object value)
         {
-            DateChanged(value);
+            OnDateChanged(value);
         }
         
-        protected object OnDateWriting(object value)
+        protected object DateWriting(object value)
         {
-            DateWriting(ref value);
+            OnDateWriting(ref value);
             return value;
         }
         
-        protected void OnOrderNoChanged(object value)
+        protected void OrderNoChanged(object value)
         {
-            OrderNoChanged(value);
+            OnOrderNoChanged(value);
         }
         
-        protected object OnOrderNoWriting(object value)
+        protected object OrderNoWriting(object value)
         {
-            OrderNoWriting(ref value);
+            OnOrderNoWriting(ref value);
             return value;
         }
         
         protected override void OnItemObjectValidate()
         {
-            Validate();
+            OnValidate();
         }
         
         protected override void OnItemObjectCanDelete(ItemObjectDeleteResult result)
         {
-            CanDelete(result);
+            OnCanDelete(result);
         }
         
         protected override void OnItemObjectDeleting(ItemObjectDeleteResult result)
         {
-            Deleting(result);
+            OnDeleting(result);
         }
         
         protected override void OnItemObjectCreated()
         {
-            Created();
+            OnCreated();
         }
         
         protected override void OnItemObjectWriting()
         {
-            Writing();
+            OnWriting();
         }
         
         protected override void OnItemObjectWritten()
         {
-            Written();
+            OnWritten();
         }
         
         
         public string CustomerReference
         {
-            get
-            {
-                return (string)CustomerReferenceProperty.Value;
-            }
-            set
-            {
-                CustomerReferenceProperty.Value = value;
-            }
+            get => (string)CustomerReferenceProperty.Value;
+            set => CustomerReferenceProperty.Value = value;
         }
         
         public DateTime? Date
         {
-            get
-            {
-                return (DateTime?)DateProperty.Value;
-            }
-            set
-            {
-                DateProperty.Value = value;
-            }
+            get => (DateTime?)DateProperty.Value;
+            set => DateProperty.Value = value;
         }
         
         public string OrderNo
         {
-            get
-            {
-                return (string)OrderNoProperty.Value;
-            }
-            set
-            {
-                OrderNoProperty.Value = value;
-            }
+            get => (string)OrderNoProperty.Value;
+            set => OrderNoProperty.Value = value;
         }
     }
     
     public partial class OrderLine : ItemObject<OrderProcessing>
     {
-        private AttributeProperty<OrderProcessing, int> QuantityProperty { get; set;}
+        public AttributeProperty<OrderProcessing, int> QuantityProperty { get; set;}
         
+        public AssociationProperty<OrderProcessing> OnProperty { get; set;}
         
         public Association<OrderProcessing, Product> For { get; private set;}
-        public Association<OrderProcessing, Order> On { get; private set;}
         
         internal OrderLine(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            QuantityProperty = new AttributeProperty<OrderProcessing, int>(this, "Quantity", "Quantity", false, false, (x) => OnQuantityChanged(x), (x) => {return OnQuantityWriting(x);});
-            AddAttributeProperty(QuantityProperty);
+            QuantityProperty = new AttributeProperty<OrderProcessing, int>(this, "Quantity", "Quantity", false, false, (x) => QuantityChanged(x), (x) => {return QuantityWriting(x);});
+            OnProperty = new AssociationProperty<OrderProcessing>(this, "On", "On", false, false, (x) => OnChanged(x), (x) => {return OnWriting(x);});
             For = new Association<OrderProcessing, Product>(this, "For", "For", "");
-            AddAssociation("For", For);
-            On = new Association<OrderProcessing, Order>(this, "On", "On", "");
-            AddAssociation("On", On);
         }
-        partial void QuantityChanged(object value);
-        partial void QuantityWriting(ref object value);
-        partial void Validate();
-        partial void CanDelete(ItemObjectDeleteResult result);
-        partial void Deleting(ItemObjectDeleteResult result);
-        partial void Created();
-        partial void Writing();
-        partial void Written();
+        partial void OnQuantityChanged(object value);
+        partial void OnQuantityWriting(ref object value);
+        partial void OnOnChanged(object value);
+        partial void OnOnWriting(ref object value);
+        partial void OnValidate();
+        partial void OnCanDelete(ItemObjectDeleteResult result);
+        partial void OnDeleting(ItemObjectDeleteResult result);
+        partial void OnCreated();
+        partial void OnWriting();
+        partial void OnWritten();
         
-        protected void OnQuantityChanged(object value)
+        protected void QuantityChanged(object value)
         {
-            QuantityChanged(value);
+            OnQuantityChanged(value);
         }
         
-        protected object OnQuantityWriting(object value)
+        protected object QuantityWriting(object value)
         {
-            QuantityWriting(ref value);
+            OnQuantityWriting(ref value);
+            return value;
+        }
+        
+        protected void OnChanged(object value)
+        {
+            OnOnChanged(value);
+        }
+        
+        protected object OnWriting(object value)
+        {
+            OnOnWriting(ref value);
             return value;
         }
         
         protected override void OnItemObjectValidate()
         {
-            Validate();
+            OnValidate();
         }
         
         protected override void OnItemObjectCanDelete(ItemObjectDeleteResult result)
         {
-            CanDelete(result);
+            OnCanDelete(result);
         }
         
         protected override void OnItemObjectDeleting(ItemObjectDeleteResult result)
         {
-            Deleting(result);
+            OnDeleting(result);
         }
         
         protected override void OnItemObjectCreated()
         {
-            Created();
+            OnCreated();
         }
         
         protected override void OnItemObjectWriting()
         {
-            Writing();
+            OnWriting();
         }
         
         protected override void OnItemObjectWritten()
         {
-            Written();
+            OnWritten();
         }
         
         
         public int? Quantity
         {
-            get
-            {
-                return (int?)QuantityProperty.Value;
-            }
-            set
-            {
-                QuantityProperty.Value = value;
-            }
+            get => (int?)QuantityProperty.Value;
+            set => QuantityProperty.Value = value;
+        }
+        
+        public Order On
+        {
+            get => (Order)OnProperty.Value;
+            set => OnProperty.Value = value;
         }
     }
     
     public partial class Product : ItemObject<OrderProcessing>
     {
-        private AttributeProperty<OrderProcessing, string> CodeProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> DescriptionProperty { get; set;}
-        private AttributeProperty<OrderProcessing, decimal> PriceProperty { get; set;}
-        private AttributeProperty<OrderProcessing, int> StockLevelProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> CodeProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> DescriptionProperty { get; set;}
+        public AttributeProperty<OrderProcessing, decimal> PriceProperty { get; set;}
+        public AttributeProperty<OrderProcessing, int> StockLevelProperty { get; set;}
         
         
         public Association<OrderProcessing, ProductGroup> Group { get; private set;}
@@ -521,164 +600,133 @@ namespace CustomerMaintenance
         
         internal Product(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => OnCodeChanged(x), (x) => {return OnCodeWriting(x);});
-            AddAttributeProperty(CodeProperty);
-            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWriting(x);});
-            AddAttributeProperty(DescriptionProperty);
-            PriceProperty = new AttributeProperty<OrderProcessing, decimal>(this, "Price", "Price", false, false, (x) => OnPriceChanged(x), (x) => {return OnPriceWriting(x);});
-            AddAttributeProperty(PriceProperty);
-            StockLevelProperty = new AttributeProperty<OrderProcessing, int>(this, "StockLevel", "StockLevel", false, false, (x) => OnStockLevelChanged(x), (x) => {return OnStockLevelWriting(x);});
-            AddAttributeProperty(StockLevelProperty);
+            CodeProperty = new AttributeProperty<OrderProcessing, string>(this, "Code", "Code", false, false, (x) => CodeChanged(x), (x) => {return CodeWriting(x);});
+            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => DescriptionChanged(x), (x) => {return DescriptionWriting(x);});
+            PriceProperty = new AttributeProperty<OrderProcessing, decimal>(this, "Price", "Price", false, false, (x) => PriceChanged(x), (x) => {return PriceWriting(x);});
+            StockLevelProperty = new AttributeProperty<OrderProcessing, int>(this, "StockLevel", "StockLevel", false, false, (x) => StockLevelChanged(x), (x) => {return StockLevelWriting(x);});
             Group = new Association<OrderProcessing, ProductGroup>(this, "Group", "Group", "");
-            AddAssociation("Group", Group);
             Is = new Association<OrderProcessing, ProductGroup>(this, "Is", "Is", "");
-            AddAssociation("Is", Is);
             OrderedOn = new Association<OrderProcessing, OrderLine>(this, "OrderedOn", "OrderedOn", "");
-            AddAssociation("OrderedOn", OrderedOn);
         }
-        partial void CodeChanged(object value);
-        partial void CodeWriting(ref object value);
-        partial void DescriptionChanged(object value);
-        partial void DescriptionWriting(ref object value);
-        partial void PriceChanged(object value);
-        partial void PriceWriting(ref object value);
-        partial void StockLevelChanged(object value);
-        partial void StockLevelWriting(ref object value);
-        partial void Validate();
-        partial void CanDelete(ItemObjectDeleteResult result);
-        partial void Deleting(ItemObjectDeleteResult result);
-        partial void Created();
-        partial void Writing();
-        partial void Written();
+        partial void OnCodeChanged(object value);
+        partial void OnCodeWriting(ref object value);
+        partial void OnDescriptionChanged(object value);
+        partial void OnDescriptionWriting(ref object value);
+        partial void OnPriceChanged(object value);
+        partial void OnPriceWriting(ref object value);
+        partial void OnStockLevelChanged(object value);
+        partial void OnStockLevelWriting(ref object value);
+        partial void OnValidate();
+        partial void OnCanDelete(ItemObjectDeleteResult result);
+        partial void OnDeleting(ItemObjectDeleteResult result);
+        partial void OnCreated();
+        partial void OnWriting();
+        partial void OnWritten();
         
-        protected void OnCodeChanged(object value)
+        protected void CodeChanged(object value)
         {
-            CodeChanged(value);
+            OnCodeChanged(value);
         }
         
-        protected object OnCodeWriting(object value)
+        protected object CodeWriting(object value)
         {
-            CodeWriting(ref value);
+            OnCodeWriting(ref value);
             return value;
         }
         
-        protected void OnDescriptionChanged(object value)
+        protected void DescriptionChanged(object value)
         {
-            DescriptionChanged(value);
+            OnDescriptionChanged(value);
         }
         
-        protected object OnDescriptionWriting(object value)
+        protected object DescriptionWriting(object value)
         {
-            DescriptionWriting(ref value);
+            OnDescriptionWriting(ref value);
             return value;
         }
         
-        protected void OnPriceChanged(object value)
+        protected void PriceChanged(object value)
         {
-            PriceChanged(value);
+            OnPriceChanged(value);
         }
         
-        protected object OnPriceWriting(object value)
+        protected object PriceWriting(object value)
         {
-            PriceWriting(ref value);
+            OnPriceWriting(ref value);
             return value;
         }
         
-        protected void OnStockLevelChanged(object value)
+        protected void StockLevelChanged(object value)
         {
-            StockLevelChanged(value);
+            OnStockLevelChanged(value);
         }
         
-        protected object OnStockLevelWriting(object value)
+        protected object StockLevelWriting(object value)
         {
-            StockLevelWriting(ref value);
+            OnStockLevelWriting(ref value);
             return value;
         }
         
         protected override void OnItemObjectValidate()
         {
-            Validate();
+            OnValidate();
         }
         
         protected override void OnItemObjectCanDelete(ItemObjectDeleteResult result)
         {
-            CanDelete(result);
+            OnCanDelete(result);
         }
         
         protected override void OnItemObjectDeleting(ItemObjectDeleteResult result)
         {
-            Deleting(result);
+            OnDeleting(result);
         }
         
         protected override void OnItemObjectCreated()
         {
-            Created();
+            OnCreated();
         }
         
         protected override void OnItemObjectWriting()
         {
-            Writing();
+            OnWriting();
         }
         
         protected override void OnItemObjectWritten()
         {
-            Written();
+            OnWritten();
         }
         
         
         public string Code
         {
-            get
-            {
-                return (string)CodeProperty.Value;
-            }
-            set
-            {
-                CodeProperty.Value = value;
-            }
+            get => (string)CodeProperty.Value;
+            set => CodeProperty.Value = value;
         }
         
         public string Description
         {
-            get
-            {
-                return (string)DescriptionProperty.Value;
-            }
-            set
-            {
-                DescriptionProperty.Value = value;
-            }
+            get => (string)DescriptionProperty.Value;
+            set => DescriptionProperty.Value = value;
         }
         
         public decimal? Price
         {
-            get
-            {
-                return (decimal?)PriceProperty.Value;
-            }
-            set
-            {
-                PriceProperty.Value = value;
-            }
+            get => (decimal?)PriceProperty.Value;
+            set => PriceProperty.Value = value;
         }
         
         public int? StockLevel
         {
-            get
-            {
-                return (int?)StockLevelProperty.Value;
-            }
-            set
-            {
-                StockLevelProperty.Value = value;
-            }
+            get => (int?)StockLevelProperty.Value;
+            set => StockLevelProperty.Value = value;
         }
     }
     
     public partial class ProductGroup : ItemObject<OrderProcessing>
     {
-        private AttributeProperty<OrderProcessing, string> DescriptionProperty { get; set;}
-        private AttributeProperty<OrderProcessing, string> NameProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> DescriptionProperty { get; set;}
+        public AttributeProperty<OrderProcessing, string> NameProperty { get; set;}
         
         
         public Association<OrderProcessing, Product> Contains { get; private set;}
@@ -687,103 +735,86 @@ namespace CustomerMaintenance
         
         internal ProductGroup(ItemObjectInitializer<OrderProcessing> initializer) : base(initializer)
         {
-            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => OnDescriptionChanged(x), (x) => {return OnDescriptionWriting(x);});
-            AddAttributeProperty(DescriptionProperty);
-            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => OnNameChanged(x), (x) => {return OnNameWriting(x);});
-            AddAttributeProperty(NameProperty);
+            DescriptionProperty = new AttributeProperty<OrderProcessing, string>(this, "Description", "Description", false, false, (x) => DescriptionChanged(x), (x) => {return DescriptionWriting(x);});
+            NameProperty = new AttributeProperty<OrderProcessing, string>(this, "Name", "Name", false, false, (x) => NameChanged(x), (x) => {return NameWriting(x);});
             Contains = new Association<OrderProcessing, Product>(this, "Contains", "Contains", "");
-            AddAssociation("Contains", Contains);
             ParentGroup = new Association<OrderProcessing, ProductGroup>(this, "ParentGroup", "ParentGroup", "");
-            AddAssociation("ParentGroup", ParentGroup);
             SubGroups = new Association<OrderProcessing, ItemObject<OrderProcessing>>(this, "SubGroups", "SubGroups", "");
-            AddAssociation("SubGroups", SubGroups);
         }
-        partial void DescriptionChanged(object value);
-        partial void DescriptionWriting(ref object value);
-        partial void NameChanged(object value);
-        partial void NameWriting(ref object value);
-        partial void Validate();
-        partial void CanDelete(ItemObjectDeleteResult result);
-        partial void Deleting(ItemObjectDeleteResult result);
-        partial void Created();
-        partial void Writing();
-        partial void Written();
+        partial void OnDescriptionChanged(object value);
+        partial void OnDescriptionWriting(ref object value);
+        partial void OnNameChanged(object value);
+        partial void OnNameWriting(ref object value);
+        partial void OnValidate();
+        partial void OnCanDelete(ItemObjectDeleteResult result);
+        partial void OnDeleting(ItemObjectDeleteResult result);
+        partial void OnCreated();
+        partial void OnWriting();
+        partial void OnWritten();
         
-        protected void OnDescriptionChanged(object value)
+        protected void DescriptionChanged(object value)
         {
-            DescriptionChanged(value);
+            OnDescriptionChanged(value);
         }
         
-        protected object OnDescriptionWriting(object value)
+        protected object DescriptionWriting(object value)
         {
-            DescriptionWriting(ref value);
+            OnDescriptionWriting(ref value);
             return value;
         }
         
-        protected void OnNameChanged(object value)
+        protected void NameChanged(object value)
         {
-            NameChanged(value);
+            OnNameChanged(value);
         }
         
-        protected object OnNameWriting(object value)
+        protected object NameWriting(object value)
         {
-            NameWriting(ref value);
+            OnNameWriting(ref value);
             return value;
         }
         
         protected override void OnItemObjectValidate()
         {
-            Validate();
+            OnValidate();
         }
         
         protected override void OnItemObjectCanDelete(ItemObjectDeleteResult result)
         {
-            CanDelete(result);
+            OnCanDelete(result);
         }
         
         protected override void OnItemObjectDeleting(ItemObjectDeleteResult result)
         {
-            Deleting(result);
+            OnDeleting(result);
         }
         
         protected override void OnItemObjectCreated()
         {
-            Created();
+            OnCreated();
         }
         
         protected override void OnItemObjectWriting()
         {
-            Writing();
+            OnWriting();
         }
         
         protected override void OnItemObjectWritten()
         {
-            Written();
+            OnWritten();
         }
         
         
         public string Description
         {
-            get
-            {
-                return (string)DescriptionProperty.Value;
-            }
-            set
-            {
-                DescriptionProperty.Value = value;
-            }
+            get => (string)DescriptionProperty.Value;
+            set => DescriptionProperty.Value = value;
         }
         
         public string Name
         {
-            get
-            {
-                return (string)NameProperty.Value;
-            }
-            set
-            {
-                NameProperty.Value = value;
-            }
+            get => (string)NameProperty.Value;
+            set => NameProperty.Value = value;
         }
     }
     
