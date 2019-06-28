@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 using Semata.DataStore.ObjectModel;
 using Semata.DataStore.ObjectModel.Views;
 using Semata.DataView;
+using Semata.Lazy;
 
 namespace CustomerMaintenance
 {
-    public partial class OrderProcessingView
+    public partial class OrderProcessingDataStoreView
     {
         LazyValue<ItemObjectViewList<CustomerView>> orderedCustomers_;
         LazyValue<SelectorDetailSource> editableCustomers_;

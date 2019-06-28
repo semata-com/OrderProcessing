@@ -1,14 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
 <#@ GenerateSemataObjectModel Processor="GenerateSemataObjectModel"#>
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Semata.DataStore.ObjectModel;
-using Semata.DataStore.ObjectModel.Views;
-using Semata.DataView;
+
 <# GenerateObjectModelViews("OrderProcessing.ds", "CustomerMaintenance", "CustomerMaintenance"); #>

@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Semata.DataStore.ObjectModel;
 using Semata.DataStore.ObjectModel.Views;
-using Semata.DataView;
+using Semata.Lazy;
+using Semata.EditableData;
 
 namespace CustomerMaintenance
 {
-    public partial class OrderProcessingView : INotifyPropertyChanged, INotifyStateChanged
+    public partial class OrderProcessingDataStoreView : INotifyPropertyChanged, INotifyStateChanged
     {
         
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler StateChanged;
         
-        protected CustomerMaintenance.OrderProcessing dataStore_;
+        protected CustomerMaintenance.OrderProcessingDataStore dataStore_;
         
         LazyValue<ItemObjectViewList<CustomerView>> customerItems_;
         LazyValue<ItemObjectViewList<OrderView>> orderItems_;
@@ -27,9 +24,9 @@ namespace CustomerMaintenance
         
         partial void OnInitialize();
         
-        public OrderProcessingView(PropertyChangedEventDispatcher eventDispatcher)
+        public OrderProcessingDataStoreView(PropertyChangedEventDispatcher eventDispatcher)
         {
-            dataStore_ = new CustomerMaintenance.OrderProcessing(eventDispatcher);
+            dataStore_ = new CustomerMaintenance.OrderProcessingDataStore(eventDispatcher);
                 customerItems_=
                     new LazyValue<ItemObjectViewList<CustomerView>>(() => 
                         new ItemObjectViewList<Customer, CustomerView>
@@ -277,10 +274,7 @@ namespace CustomerMaintenance
             {
                 return itemObject_.On == null ? null : new OrderView(itemObject_.On, false, false);
             }
-            set
-            {
-                itemObject_.On = value == null ? null : value.ItemObject;
-            }
+            set => itemObject_.On = value?.ItemObject;
         }
         
         public IReadOnlyList<ProductView> For => for_.Value;

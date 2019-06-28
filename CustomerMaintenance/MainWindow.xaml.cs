@@ -23,14 +23,14 @@ namespace CustomerMaintenance
     public partial class MainWindow : Window
     {
         Customer customer_;
-        OrderProcessingView orderProcessing_;
+        OrderProcessingDataStoreView orderProcessing_;
         string filterAttribute_ = "(No Filter)";
         string filterValue_ = "";
 
         public MainWindow()
         {
             InitializeComponent();
-            orderProcessing_ = new OrderProcessingView(null);
+            orderProcessing_ = new OrderProcessingDataStoreView(null);
             orderProcessing_.Open("..\\..\\Orderprocessing.ds");
             FilterAttributeComboBox.Items.Add("(No Filter)");
             FilterAttributeComboBox.Items.Add("Code");
