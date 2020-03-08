@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessing", "OrderProcessing\OrderProcessing.csproj", "{F5ADED29-00C2-4365-86FF-EE57438392FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessingSetup", "OrderProcessingSetup\OrderProcessingSetup.csproj", "{157CB14A-28D2-424D-8E0B-324B2AC45806}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5ADED29-00C2-4365-86FF-EE57438392FF}.Debug|x86.ActiveCfg = Debug|x86
+		{F5ADED29-00C2-4365-86FF-EE57438392FF}.Debug|x86.Build.0 = Debug|x86
+		{F5ADED29-00C2-4365-86FF-EE57438392FF}.Release|x86.ActiveCfg = Release|x86
+		{F5ADED29-00C2-4365-86FF-EE57438392FF}.Release|x86.Build.0 = Release|x86
+		{157CB14A-28D2-424D-8E0B-324B2AC45806}.Debug|x86.ActiveCfg = Debug|x86
+		{157CB14A-28D2-424D-8E0B-324B2AC45806}.Debug|x86.Build.0 = Debug|x86
+		{157CB14A-28D2-424D-8E0B-324B2AC45806}.Release|x86.ActiveCfg = Release|x86
+		{157CB14A-28D2-424D-8E0B-324B2AC45806}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ADDEC13E-0ADD-48BC-9EBD-46ED9389BBAC}
+	EndGlobalSection
+EndGlobal

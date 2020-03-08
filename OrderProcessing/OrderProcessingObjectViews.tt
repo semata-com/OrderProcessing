@@ -2,4 +2,4 @@
 <#@ output extension=".cs" #>
 <#@ GenerateSemataObjectModel Processor="GenerateSemataObjectModel"#>
 
-<# GenerateObjectModelViews("OrderProcessing.ds", "CustomerMaintenance", "CustomerMaintenance"); #>
+<# GenerateObjectModelViews("OrderProcessing.ds", "OrderProcessing", "OrderProcessing"); #>
