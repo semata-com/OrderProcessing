@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("OrderProcessing")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Semata Ltd")]
 [assembly: AssemblyProduct("OrderProcessing")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

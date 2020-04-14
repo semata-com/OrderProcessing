@@ -54,8 +54,7 @@ namespace OrderProcessing
                         (OrderedCustomers
                          , (x) => x is CustomerView ? new CustomerView(x as CustomerView, true, true) : null
                          , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
-                         , false
-                         , true));
+                         , EditableDataManager.EditingMode.AutoEdit));
 
             orderedProducts_ =
                 new LazyValue<ItemObjectViewList<Product, ProductView>>(() =>
@@ -70,8 +69,7 @@ namespace OrderProcessing
                         (OrderedProducts
                          , (x) => x is ProductView ? new ProductView(x as ProductView, true, true) : null
                          , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
-                         , false
-                         , true));
+                         , EditableDataManager.EditingMode.AutoEdit));
         }
 
         public ItemObjectViewList<Customer, CustomerView> OrderedCustomers => orderedCustomers_.Value;
@@ -104,8 +102,7 @@ namespace OrderProcessing
                         (OrderedOrders
                          , (x) => x is OrderView ? new OrderView(x as OrderView, true, true) : null
                          , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Orders", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
-                         , false
-                         , true));
+                         , EditableDataManager.EditingMode.AutoEdit));
         }
 
         public ItemObjectViewList<Order, OrderView> OrderedOrders => orderedOrders_.Value;
