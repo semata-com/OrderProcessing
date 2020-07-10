@@ -18,6 +18,14 @@ namespace OrderProcessing
 
     public partial class OrderLine
     {
+        //partial void OnValidate()
+        //{
+        //    if (Quantity - ((int?)QuantityProperty.StoredValue ?? 0) > (For.StockLevel ?? 0))
+        //    {
+        //        AddError("Quantity", "Quantity is grater than available stock");
+        //    }
+        //}
+
         partial void OnWriting()
         {
             For.StockLevel -= ((int?)QuantityProperty.Value ?? 0) - ((int?)QuantityProperty.StoredValue ?? 0);
