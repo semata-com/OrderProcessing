@@ -37,14 +37,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
-    <Reference Include="Semata.DataStoreCLR, Version=1.0.175.311, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStoreCLR.ObjectModel, Version=1.0.175.311, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStoreCLR.ObjectModel.Views, Version=1.0.175.311, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStoreCLR.Util, Version=1.0.175.311, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.EditableData, Version=1.0.11.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Semata.Lazy, Version=1.0.21.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Semata.DataStoreCLR, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStoreCLR.ObjectModel, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStoreCLR.ObjectModel.Views, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStoreCLR.Util, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.EditableData, Version=1.0.16.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Semata.Lazy, Version=1.0.22.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -128,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Semata.ControlsCLR">
-      <Version>1.0.88</Version>
+      <Version>1.0.92</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

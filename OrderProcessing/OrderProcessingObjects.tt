@@ -1,5 +1,4 @@
 ﻿<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
-<#@ GenerateSemataObjectModel Processor="GenerateSemataObjectModel" #>
-
+<#@ DataStoreCodeGenerator Processor="Semata.CodeGeneratorDirectiveProcessor" #>
 <# GenerateObjectModel("OrderProcessing.ds", "OrderProcessing"); #>

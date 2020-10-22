@@ -228,7 +228,9 @@
                                                                                         IsReadOnly="True"
                                                                                         Binding="{Binding For.Description}" />
                                                                     <DataGridTextColumn Header="Quantity"
-                                                                                        Binding="{Binding Quantity}" />
+                                                                                        Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" />
+                                                                    <DataGridTextColumn Header="Stock"
+                                                                                        Binding="{Binding Stock}" />
                                                                     <DataGridTextColumn Header="Price"
                                                                                         IsReadOnly="True"
                                                                                         Binding="{Binding For.Price}" />

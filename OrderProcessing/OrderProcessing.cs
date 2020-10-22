@@ -26,17 +26,17 @@ namespace OrderProcessing
         //    }
         //}
 
-        partial void OnWriting()
-        {
-            For.StockLevel -= ((int?)QuantityProperty.Value ?? 0) - ((int?)QuantityProperty.StoredValue ?? 0);
-            For.Write();
-        }
+        //partial void OnWriting()
+        //{
+        //    For.StockLevel -= ((int?)QuantityProperty.Value ?? 0) - ((int?)QuantityProperty.StoredValue ?? 0);
+        //    For.Write();
+        //}
 
-        partial void OnDeleting()
-        {
-            For.StockLevel += ((int?)QuantityProperty.StoredValue ?? 0);
-            For.Write();
-        }
+        //partial void OnDeleting()
+        //{
+        //    For.StockLevel += ((int?)QuantityProperty.StoredValue ?? 0);
+        //    For.Write();
+        //}
     }
 
     public partial class OrderProcessingDataStoreView
@@ -52,7 +52,7 @@ namespace OrderProcessing
             orderedCustomers_ =
                 new LazyValue<ItemObjectViewList<Customer, CustomerView>>(() =>
                     new ItemObjectViewList<Customer, CustomerView>
-                        (dataStore_.CustomerItems.GetItemObjectSet()
+                        (dataStore_.CustomerItems.GetItemObjectCollection()
                          , z => z.OrderBy((y) => y.Code)
                          , (x) => new CustomerView(x, false, false)));
 
@@ -67,7 +67,7 @@ namespace OrderProcessing
             orderedProducts_ =
                 new LazyValue<ItemObjectViewList<Product, ProductView>>(() =>
                     new ItemObjectViewList<Product, ProductView>
-                        (dataStore_.ProductItems.GetItemObjectSet()
+                        (dataStore_.ProductItems.GetItemObjectCollection()
                          , z => z.OrderBy((y) => y.Code)
                          , (x) => new ProductView(x, false, false)));
 
@@ -100,7 +100,7 @@ namespace OrderProcessing
             orderedOrders_ =
                 new LazyValue<ItemObjectViewList<Order, OrderView>>(() =>
                     new ItemObjectViewList<Order, OrderView>
-                        (Customer.Has.GetItemObjectSet()
+                        (Customer.Has.GetItemObjectCollection()
                          , z => z.OrderBy((y) => y.Date)
                          , (x) => new OrderView(x, false, false)));
 
@@ -128,7 +128,7 @@ namespace OrderProcessing
             editableLines_ =
                 new LazyValue<ItemObjectViewList<OrderLine, OrderLineView>>(() =>
                     new ItemObjectViewList<OrderLine, OrderLineView>
-                        (Order.Lines.GetItemObjectSet()
+                        (Order.Lines.GetItemObjectCollection()
                          , z => z.OrderBy((y) => y.For.Code)
                          , (x) => new OrderLineView(x, true, true)));
 
@@ -166,6 +166,7 @@ namespace OrderProcessing
             if (e.PropertyName == "Quantity")
             {
                 NotifyPropertyChanged(new PropertyChangedEventArgs("Cost"));
+                NotifyPropertyChanged(new PropertyChangedEventArgs("Stock"));
             }
             else if (e.PropertyName == "For")
             {
@@ -178,7 +179,9 @@ namespace OrderProcessing
                     currentProduct = For;
                     currentProduct.PropertyChanged += CurrentProductPropertyChanged;
                 }
+                ItemObject.ClearErrors("Quantity");
                 NotifyPropertyChanged(new PropertyChangedEventArgs("Cost"));
+                NotifyPropertyChanged(new PropertyChangedEventArgs("Stock"));
             }
         }
 
@@ -187,7 +190,11 @@ namespace OrderProcessing
             var result = base.Validate();
             if (result)
             {
-                if (ItemObject.Quantity - ((int?)ItemObject.QuantityProperty.StoredValue ?? 0) > (ItemObject.For.StockLevel ?? 0))
+                if (ItemObject.For == null)
+                {
+                    ItemObject.AddError("For", "Product must be specified");
+                }
+                else if (ItemObject.Quantity - ((int?)ItemObject.QuantityProperty.StoredValue ?? 0) > (ItemObject.For.StockLevel ?? 0))
                 {
                     ItemObject.AddError("Quantity", "Quantity is grater than available stock");
                 }
@@ -195,8 +202,21 @@ namespace OrderProcessing
             return result;
         }
 
+        public override bool Write()
+        {
+            ItemObject.For.StockLevel += (int)(ItemObject?.QuantityProperty.StoredValue ?? 0) - (ItemObject?.Quantity ?? 0);
+            return For.Write() && base.Write();
+        }
+
+        public override bool Delete()
+        {
+            ItemObject.For.StockLevel += (int)(ItemObject?.QuantityProperty.StoredValue ?? 0) - (ItemObject?.Quantity ?? 0);
+            return For.Write() && base.Delete();
+        }
+
         public decimal Cost => (ItemObject?.For?.Price ?? 0) * (ItemObject?.Quantity ?? 0);
 
+        public int Stock => (ItemObject?.For?.StockLevel ?? 0) + (int)(ItemObject?.QuantityProperty.StoredValue ?? 0) - (ItemObject?.Quantity ?? 0);
     }
 }
 

@@ -30,7 +30,9 @@ namespace OrderProcessing
         {
             InitializeComponent();
             orderProcessing_ = new OrderProcessingDataStoreView(null);
-            orderProcessing_.Open("..\\..\\..\\OrderProcessing.ds");
+            string appCommonData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string orderProcessingPath = appCommonData + "\\Semata\\OrderProcessing\\OrderProcessing.ds";
+            orderProcessing_.Open(orderProcessingPath);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

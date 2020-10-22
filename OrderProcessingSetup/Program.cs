@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Semata.DataStore;
+using Semata.DataStore.Util;
 
 namespace OrderProcessing
 {
@@ -8,8 +10,8 @@ namespace OrderProcessing
 
     class Program
     {
-        static string annotationPrefix = @"
-{
+        static string annotationPrefix = 
+ @"{
   ""semata.datastore.objectmodel"" : 
   [
      ";
@@ -20,16 +22,15 @@ namespace OrderProcessing
 ";
         static string FormatAnnotations(string annotations)
         {
-            var formattedAnnotations = "\"" + annotations.Replace(",", "\",\n     \"") + "\"";
+            Regex rgx = new Regex(",\\s*");
+            var formattedAnnotations = "\"" + rgx.Replace(annotations, "\",\r\n     \"") + "\"";
             return annotationPrefix + formattedAnnotations + annotationSuffix;
         }
-
-        static string orderProcessingPath = "..\\..\\..\\..\\OrderProcessing\\OrderProcessing.ds";
 
         static void CreateDataStore(string path)
         {
             /// Create DataStore
-            Connection orderProcessing = Instance.Create(path, "OrderProcessing");
+            Connection orderProcessing = Instance.Create(path, "OrderProcessingDataStore");
 
             ItemType customerType = orderProcessing.AddItemType("Customer","", "");
             customerType.AddAttributeType("Code", "", FormatAnnotations("mandatory, unique"), ValueType.String);
@@ -48,7 +49,8 @@ namespace OrderProcessing
             ItemType productType = orderProcessing.AddItemType("Product", "", "");
             AttributeType productCodeAttribute = productType.AddAttributeType("Code", "", FormatAnnotations("mandatory, unique"), ValueType.String);
             /// Create Attribute Type
-            productType.AddAttributeType("Description", "", FormatAnnotations("mandatory"), ValueType.String);
+            productType.AddAttributeType("Description", "", "", ValueType.String);
+            productType.GetAttributeType("Description").SetAnnotation(FormatAnnotations("mandatory"));
             productType.AddAttributeType("StockLevel", "", "", ValueType.Integer);
             productType.AddAttributeType("Price", "", "", ValueType.Decimal);
 
@@ -63,7 +65,9 @@ namespace OrderProcessing
             customerType.AddAssociationType("Has", "", FormatAnnotations("associates_prevent_delete"), orderType, "By", "", FormatAnnotations("property"));
             orderType.AddAssociationType("Lines", "", FormatAnnotations("delete_associates"), orderLineType, "On", "", FormatAnnotations("property"));
             /// Create Association Type
-            productType.AddAssociationType("OrderedOn", "", FormatAnnotations("associates_prevent_delete"), orderLineType, "For", "", FormatAnnotations("property"));
+            productType.AddAssociationType("OrderedOn", "", "", orderLineType, "For", "", "");
+            productType.GetAssociationType("OrderedOn").SetAnnotation(FormatAnnotations("associates_prevent_delete"));
+            orderLineType.GetAssociationType("For").SetAnnotation(FormatAnnotations("property, mandatory(Product not Set)"));
             productGroupType.AddAssociationType( "Contains", "", "", productType, "Is", "", FormatAnnotations("property"));
 
             AssociationTypePair groupTypes = productGroupType.AddAssociationType("SubGroups", "", "", productGroupType, "ParentGroup", "", FormatAnnotations("property"));
@@ -164,7 +168,7 @@ namespace OrderProcessing
             product.SetAttribute("Code", code);
             product.SetAttribute("Description", description);
             product.SetAttribute("StockLevel", stockLevel);
-            product.SetAttribute("Price", price);
+            product.SetAttribute<decimal>("Price", price);
             if (productGroup != null)
             {
                 product.AddAssociation("Is", productGroup);
@@ -172,7 +176,7 @@ namespace OrderProcessing
             return product;
         }
 
-        static Item CreateOrder(Connection orderProcessing, Item customer, string orderNo, DateTime date, string customerReference)
+        static Item CreateOrder(Connection orderProcessing, Item customer, string orderNo, Date date, string customerReference)
         {
             Item order = orderProcessing.GetItemType("Order").CreateItem();
             order.SetAttribute("OrderNo", orderNo);
@@ -237,7 +241,7 @@ namespace OrderProcessing
         static void CreateCustomerOrder(Connection orderProcessing
                                         , string customerCode
                                         , string orderNo
-                                        , DateTime date
+                                        , Date date
                                         , string customerReference
                                         , ProductQuantity[] lines)
         {
@@ -307,14 +311,14 @@ namespace OrderProcessing
             CreateCustomerOrder(orderProcessing
                                 , "JH001"
                                 , "001"
-                                , new DateTime(2014, 5, 13)
+                                , new Date(2014, 5, 13)
                                 , "JH-123"
                                 , new ProductQuantity[] { new ProductQuantity("10002", 2)
                                                           , new ProductQuantity("20004", 3)  } );
             CreateCustomerOrder(orderProcessing
                                 , "JH001"
                                 , "002"
-                                , new DateTime(2014, 5, 14)
+                                , new Date(2014, 5, 14)
                                 , "JH-456"
                                 , new ProductQuantity[] { new ProductQuantity("10003", 5)
                                                           , new ProductQuantity("20007", 5) 
@@ -322,7 +326,7 @@ namespace OrderProcessing
             CreateCustomerOrder(orderProcessing
                                 , "HD001"
                                 , "003"
-                                , new DateTime(2014, 5, 15)
+                                , new Date(2014, 5, 15)
                                 , "HD/5/15"
                                 , new ProductQuantity[] { new ProductQuantity("10004", 7)});
         }
@@ -331,6 +335,14 @@ namespace OrderProcessing
         {
             try
             {
+                string appCommonData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string orderProcessingFolder = appCommonData + "\\Semata\\OrderProcessing";
+                string orderProcessingPath = orderProcessingFolder + "\\OrderProcessing.ds";
+
+                if (!Directory.Exists(orderProcessingFolder))
+                {
+                    Directory.CreateDirectory(orderProcessingFolder);
+                }
                 if (File.Exists(orderProcessingPath))
                 {
                     File.Delete(orderProcessingPath);
