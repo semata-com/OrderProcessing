@@ -61,7 +61,7 @@ namespace OrderProcessing
                     new SelectorDetailSource
                         (OrderedCustomers
                          , (x) => x is CustomerView ? new CustomerView(x as CustomerView, true, true) : null
-                         , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
+                         , (x) => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
                          , EditableDataManager.EditingMode.AutoEdit));
 
             orderedProducts_ =
@@ -76,7 +76,7 @@ namespace OrderProcessing
                     new SelectorDetailSource
                         (OrderedProducts
                          , (x) => x is ProductView ? new ProductView(x as ProductView, true, true) : null
-                         , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
+                         , (x) => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Customers", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
                          , EditableDataManager.EditingMode.AutoEdit));
         }
 
@@ -109,7 +109,7 @@ namespace OrderProcessing
                     new SelectorDetailSource
                         (OrderedOrders
                          , (x) => x is OrderView ? new OrderView(x as OrderView, true, true) : null
-                         , () => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Orders", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
+                         , (x) => System.Windows.MessageBox.Show("Has been edited, Save Changes?", "Orders", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK
                          , EditableDataManager.EditingMode.AutoEdit));
         }
 

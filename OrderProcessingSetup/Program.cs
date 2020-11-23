@@ -27,10 +27,10 @@ namespace OrderProcessing
             return annotationPrefix + formattedAnnotations + annotationSuffix;
         }
 
-        static void CreateDataStore(string path)
+        static void CreateDataStore(string orderProcessingPath)
         {
             /// Create DataStore
-            Connection orderProcessing = Instance.Create(path, "OrderProcessingDataStore");
+            Connection orderProcessing = Instance.Create(orderProcessingPath, "OrderProcessingDataStore");
 
             ItemType customerType = orderProcessing.AddItemType("Customer","", "");
             customerType.AddAttributeType("Code", "", FormatAnnotations("mandatory, unique"), ValueType.String);
