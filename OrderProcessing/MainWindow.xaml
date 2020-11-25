@@ -36,8 +36,8 @@
         </StackPanel>
         <TabControl Margin=" 10,10,10,10">
             <TabItem x:Name="CustomersTab"
-                             Header="Customers"
-                             Margin="-2,0,-2,-2">
+                     Header="Customers"
+                     Margin="-2,0,-2,-2">
                 <DockPanel Margin="20,20,20,20">
                     <dataView:SelectorDetail DataContext="{Binding EditableCustomers}">
                         <DockPanel>
@@ -49,10 +49,10 @@
                                          Margin="-2,0,-2,-2">
                                     <StackPanel>
                                         <Grid HorizontalAlignment="Left"
-                                          Margin="10,10,0,0"
-                                          VerticalAlignment="Top"
-                                          Width="740"
-                                          DataContext="{Binding Detail.Data}">
+                                              Margin="10,10,0,0"
+                                              VerticalAlignment="Top"
+                                              Width="740"
+                                              DataContext="{Binding Detail.Data}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150"/>
                                                 <ColumnDefinition Width="250"/>
@@ -155,14 +155,14 @@
                                             <TabControl Margin="10,10,10,10"
                                                         Height="180">
                                                 <TabItem x:Name="OrderDetailsTab"
-                                                        Header="Details"
-                                                        Margin="-2,0,-2,-2">
+                                                         Header="Details"
+                                                         Margin="-2,0,-2,-2">
                                                     <StackPanel>
                                                         <Grid HorizontalAlignment="Left"
-                                                            Margin="10,10,0,0"
-                                                            VerticalAlignment="Top"
-                                                            Width="740"
-                                                            DataContext="{Binding Detail.Data}">
+                                                              Margin="10,10,0,0"
+                                                              VerticalAlignment="Top"
+                                                              Width="740"
+                                                              DataContext="{Binding Detail.Data}">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="150"/>
                                                                 <ColumnDefinition Width="250"/>
@@ -283,29 +283,29 @@
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="ProductsTab"
-                             Header="Products"
-                             Margin="-2,0,-2,-2">
+                     Header="Products"
+                     Margin="-2,0,-2,-2">
                         <dataView:SelectorDetail DataContext="{Binding EditableProducts}">
                         <StackPanel Orientation="Vertical">
                             <DockPanel>
                                 <StackPanel Margin="20,20,20,20"
-                                        DockPanel.Dock="Right">
+                                            DockPanel.Dock="Right">
                                     <Button Margin="0,0,0,10"
-                                        Command="{Binding Detail.NewCommand}"
-                                        Content="New"/>
+                                            Command="{Binding Detail.NewCommand}"
+                                            Content="New"/>
                                     <Button Command="{Binding Detail.DeleteCommand}"
-                                        Content="Delete"/>
+                                            Content="Delete"/>
                                 </StackPanel>
                                 <ListView x:Name="ProductList"
-			                            HorizontalAlignment="Left" 
-			                            Height="127"  
-			                            Margin="0,0,0,0" 
-			                            VerticalAlignment="Top"
-			                            Width="735"
-                                        RenderTransformOrigin="0.5,0.5"
-                                        ItemsSource="{Binding SelectorSource}"
-                                        IsSynchronizedWithCurrentItem="True"
-                                        dataView:SelectorDetail.IsSelector="True">
+                                          HorizontalAlignment="Left"
+                                          Height="127"  
+                                          Margin="0,0,0,0" 
+                                          VerticalAlignment="Top"
+                                          Width="735"
+                                          RenderTransformOrigin="0.5,0.5"
+                                          ItemsSource="{Binding SelectorSource}"
+                                          IsSynchronizedWithCurrentItem="True"
+                                          dataView:SelectorDetail.IsSelector="True">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Header="Code"
@@ -326,10 +326,10 @@
                             </DockPanel>
                             <StackPanel>
                                 <Grid HorizontalAlignment="Left"
-                                    Margin="10,10,0,0"
-                                    VerticalAlignment="Top"
-                                    Width="740"
-                                    DataContext="{Binding Detail.Data}">
+                                      Margin="10,10,0,0"
+                                      VerticalAlignment="Top"
+                                      Width="740"
+                                      DataContext="{Binding Detail.Data}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="250"/>
@@ -345,25 +345,25 @@
                                     <Label Content="Price" Grid.Row="2" Grid.Column="0"/>
                                     <Label Content="Stock" Grid.Row="3" Grid.Column="0"/>
                                     <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
-					                            IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
-                                                Margin="1,1,1,1"
-                                                Grid.Row="0"
-                                                Grid.Column="1"/>
+                                             IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                                             Margin="1,1,1,1"
+                                             Grid.Row="0"
+                                             Grid.Column="1"/>
                                     <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-					                            IsEnabled="True"
-                                                Margin="1,1,1,1"
-                                                Grid.Row="1"
-                                                Grid.Column="1"/>
+                                             IsEnabled="True"
+                                             Margin="1,1,1,1"
+                                             Grid.Row="1"
+                                             Grid.Column="1"/>
                                     <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
-					                            IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
-                                                Margin="1,1,1,1"
-                                                Grid.Row="2"
-                                                Grid.Column="1"/>
+                                             IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                                             Margin="1,1,1,1"
+                                             Grid.Row="2"
+                                             Grid.Column="1"/>
                                     <TextBox Text="{Binding StockLevel, UpdateSourceTrigger=PropertyChanged}"
-					                            IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
-                                                Margin="1,1,1,1"
-                                                Grid.Row="3"
-                                                Grid.Column="1"/>
+                                             IsEnabled="{Binding ., Converter={StaticResource IsNotNull}}"
+                                             Margin="1,1,1,1"
+                                             Grid.Row="3"
+                                             Grid.Column="1"/>
                                 </Grid>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="Save"
