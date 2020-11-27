@@ -34,8 +34,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Semata.DataStoreCLR, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
-    <Reference Include="Semata.DataStoreCLR.Util, Version=1.0.175.354, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStoreCLR, Version=1.0.190.376, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="Semata.DataStoreCLR.Util, Version=1.0.190.376, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
