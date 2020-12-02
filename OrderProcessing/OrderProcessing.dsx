@@ -1,0 +1,515 @@
+SDS_EXPORT;1.0
+OrderProcessingDataStore
+Customer
+
+
+AddressLine1;String
+
+
+AddressLine2;String
+
+
+AddressLine3;String
+
+
+Code;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory",\0d\0a     "unique"\0d\0a  ]\0d\0a}\0d\0a
+Name;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory"\0d\0a  ]\0d\0a}\0d\0a
+PostCode;String
+
+
+PostTown;String
+
+
+/
+3473408
+AddressLine1;28 High Street
+AddressLine2;
+AddressLine3;
+Code;JH001
+Name;Jones Hardware
+PostCode;BS54 2XZ
+PostTown;Bristol
+/
+3473409
+AddressLine1;3 Portland Avenue
+AddressLine2;
+AddressLine3;
+Code;HD001
+Name;Hamptons DIY
+PostCode;BA42 7UV
+PostTown;Bath
+/
+3473410
+AddressLine1;11 London Road
+AddressLine2;
+AddressLine3;
+Code;LH001
+Name;Lansdown Home Improvements
+PostCode;BA23 9AH
+PostTown;Keynsham
+/
+/
+Order
+
+
+CustomerReference;String
+
+
+Date;Date
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory"\0d\0a  ]\0d\0a}\0d\0a
+OrderNo;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory",\0d\0a     "unique"\0d\0a  ]\0d\0a}\0d\0a
+/
+3473456
+CustomerReference;JH-123
+Date;2014/5/13
+OrderNo;001
+/
+3473459
+CustomerReference;JH-456
+Date;2014/5/14
+OrderNo;002
+/
+3473463
+CustomerReference;HD/5/15
+Date;2014/5/15
+OrderNo;003
+/
+3473466
+OrderNo;N001
+/
+/
+OrderLine
+
+
+Quantity;Integer
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory"\0d\0a  ]\0d\0a}\0d\0a
+/
+3473457
+Quantity;2
+/
+3473458
+Quantity;3
+/
+3473460
+Quantity;5
+/
+3473461
+Quantity;5
+/
+3473462
+Quantity;10
+/
+3473464
+Quantity;7
+/
+3473467
+Quantity;4
+/
+/
+Product
+
+
+Code;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory",\0d\0a     "unique"\0d\0a  ]\0d\0a}\0d\0a
+Description;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory"\0d\0a  ]\0d\0a}\0d\0a
+Price;Decimal
+
+
+StockLevel;Integer
+
+
+/
+3473416
+Code;10002
+Description;Countersunk Screws 3 x 12mm Pack of 200
+Price;1.66
+StockLevel;6
+/
+3473417
+Code;10003
+Description;Countersunk Screws 3 x 16mm Pack of 200
+Price;2.50
+StockLevel;19
+/
+3473418
+Code;10004
+Description;Countersunk Screws 3 x 20mm Pack of 200
+Price;2.60
+StockLevel;2
+/
+3473419
+Code;10005
+Description;Countersunk Screws 3 x 25mm Pack of 200
+Price;2.90
+StockLevel;5
+/
+3473420
+Code;10006
+Description;Countersunk Screws 3 x 30mm Pack of 200
+Price;3.26
+StockLevel;8
+/
+3473421
+Code;10007
+Description;Countersunk Screws 3.5 x 12mm Pack of 200
+Price;2.60
+StockLevel;11
+/
+3473422
+Code;10008
+Description;Countersunk Screws 3.5 x 16mm Pack of 200
+Price;2.86
+StockLevel;14
+/
+3473423
+Code;10009
+Description;Countersunk Screws 3.5 x 20mm Pack of 200
+Price;3.01
+StockLevel;17
+/
+3473424
+Code;10010
+Description;Countersunk Screws 3.5 x 25mm Pack of 200
+Price;3.43
+StockLevel;0
+/
+3473425
+Code;10011
+Description;Countersunk Screws 3.5 x 30mm Pack of 200
+Price;3.74
+StockLevel;3
+/
+3473426
+Code;10012
+Description;Countersunk Screws 3.5 x 40mm Pack of 200
+Price;4.39
+StockLevel;6
+/
+3473427
+Code;10013
+Description;Countersunk Screws 4 x 16mm Pack of 200
+Price;3.24
+StockLevel;9
+/
+3473428
+Code;10014
+Description;Countersunk Screws 4 x 20mm Pack of 200
+Price;3.48
+StockLevel;12
+/
+3473429
+Code;10015
+Description;Countersunk Screws 4 x 25mm Pack of 200
+Price;3.78
+StockLevel;4
+/
+3473430
+Code;10016
+Description;Countersunk Screws 4 x 30mm Pack of 200
+Price;4.38
+StockLevel;7
+/
+3473431
+Code;10017
+Description;Countersunk Screws 4 x 35mm Pack of 200
+Price;4.75
+StockLevel;10
+/
+3473432
+Code;10018
+Description;Countersunk Screws 4 x 40mm Pack of 200
+Price;5.29
+StockLevel;13
+/
+3473433
+Code;10019
+Description;Countersunk Screws 4 x 45mm Pack of 200
+Price;5.66
+StockLevel;16
+/
+3473434
+Code;10020
+Description;Countersunk Screws 4.5 x 25mm Pack of 200
+Price;4.65
+StockLevel;19
+/
+3473435
+Code;10021
+Description;Countersunk Screws 4 x 50mm Pack of 200
+Price;6.20
+StockLevel;2
+/
+3473436
+Code;10022
+Description;Countersunk Screws 4.5 x 30mm Pack of 200
+Price;5.20
+StockLevel;5
+/
+3473437
+Code;10023
+Description;Countersunk Screws 4.5 x 40mm Pack of 200
+Price;6.31
+StockLevel;8
+/
+3473438
+Code;10024
+Description;Countersunk Screws 4.5 x 45mm Pack of 200
+Price;6.96
+StockLevel;11
+/
+3473439
+Code;10025
+Description;Countersunk Screws 4.5 x 50mm Pack of 200
+Price;7.59
+StockLevel;14
+/
+3473440
+Code;10027
+Description;Countersunk Screws 5 x 30mm Pack of 200
+Price;6.15
+StockLevel;19
+/
+3473441
+Code;10028
+Description;Countersunk Screws 5 x 40mm Pack of 200
+Price;7.78
+StockLevel;2
+/
+3473442
+Code;10029
+Description;Countersunk Screws 5 x 45mm Pack of 200
+Price;8.34
+StockLevel;15
+/
+3473443
+Code;10030
+Description;Countersunk Screws 5 x 50mm Pack of 200
+Price;9.14
+StockLevel;18
+/
+3473444
+Code;20002
+Description;Round Head Screws 3.5 x 25mm Pack of 200
+Price;1.35
+StockLevel;6
+/
+3473445
+Code;20004
+Description;Round Head Screws 4 x 30mm Pack of 200
+Price;1.69
+StockLevel;14
+/
+3473446
+Code;20005
+Description;Round Head Screws 4 x 40mm Pack of 200
+Price;1.86
+StockLevel;7
+/
+3473447
+Code;20007
+Description;Round Head Screws 4 x 50mm Pack of 200
+Price;2.13
+StockLevel;14
+/
+3473448
+Code;20009
+Description;Round Head Screws 5 x 50mm Pack of 200
+Price;3.55
+StockLevel;11
+/
+3473449
+Code;20010
+Description;Round Head Screws 5 x 60mm Pack of 100
+Price;2.20
+StockLevel;4
+/
+3473450
+Code;20012
+Description;Round Head Screws 5 x 80mm Pack of 100
+Price;2.89
+StockLevel;1
+/
+3473451
+Code;20013
+Description;Round Head Screws 6 x 100mm Pack of 100
+Price;5.08
+StockLevel;13
+/
+3473452
+Code;30002
+Description;Nails 3.75 x 75mm 1kg Pack 
+Price;3.87
+StockLevel;6
+/
+3473453
+Code;30003
+Description;Nails 4.50 x 100mm 1kg Pack 
+Price;3.87
+StockLevel;9
+/
+3473454
+Code;30004
+Description;Nails 5.60 x 125mm 1kg Pack 
+Price;3.87
+StockLevel;12
+/
+3473455
+Code;30005
+Description;Nails 6.00 x 150mm 1kg Pack 
+Price;3.87
+StockLevel;15
+/
+/
+ProductGroup
+
+
+Description;String
+
+
+Name;String
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "mandatory",\0d\0a     "unique"\0d\0a  ]\0d\0a}\0d\0a
+/
+3473411
+Description;
+Name;Fixings
+/
+3473412
+Description;
+Name;Screws
+/
+3473413
+Description;
+Name;Countersunk Screws
+/
+3473414
+Description;
+Name;RoundHead Screws
+/
+3473415
+Description;
+Name;Nails
+/
+/
+/
+Order;By
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "property"\0d\0a  ]\0d\0a}\0d\0a
+/
+Customer;Has
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "associates_prevent_delete"\0d\0a  ]\0d\0a}\0d\0a
+3473408;Order;3473456
+3473408;Order;3473459
+3473409;Order;3473463
+/
+/
+OrderLine;On
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "property"\0d\0a  ]\0d\0a}\0d\0a
+/
+Order;Lines
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "delete_associates"\0d\0a  ]\0d\0a}\0d\0a
+3473456;OrderLine;3473457
+3473456;OrderLine;3473458
+3473459;OrderLine;3473460
+3473459;OrderLine;3473461
+3473459;OrderLine;3473462
+3473463;OrderLine;3473464
+3473466;OrderLine;3473467
+/
+/
+OrderLine;For
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "property",\0d\0a     "mandatory(Product not Set)"\0d\0a  ]\0d\0a}\0d\0a
+/
+Product;OrderedOn
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "associates_prevent_delete"\0d\0a  ]\0d\0a}\0d\0a
+3473416;OrderLine;3473457
+3473417;OrderLine;3473460
+3473418;OrderLine;3473464
+3473445;OrderLine;3473458
+3473447;OrderLine;3473461
+3473452;OrderLine;3473462
+/
+/
+Product;Is
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "property"\0d\0a  ]\0d\0a}\0d\0a
+/
+ProductGroup;Contains
+
+
+3473413;Product;3473416
+3473413;Product;3473417
+3473413;Product;3473418
+3473413;Product;3473419
+3473413;Product;3473420
+3473413;Product;3473421
+3473413;Product;3473422
+3473413;Product;3473423
+3473413;Product;3473424
+3473413;Product;3473425
+3473413;Product;3473426
+3473413;Product;3473427
+3473413;Product;3473428
+3473413;Product;3473429
+3473413;Product;3473430
+3473413;Product;3473431
+3473413;Product;3473432
+3473413;Product;3473433
+3473413;Product;3473434
+3473413;Product;3473435
+3473413;Product;3473436
+3473413;Product;3473437
+3473413;Product;3473438
+3473413;Product;3473439
+3473413;Product;3473440
+3473413;Product;3473441
+3473413;Product;3473442
+3473413;Product;3473443
+3473414;Product;3473444
+3473414;Product;3473445
+3473414;Product;3473446
+3473414;Product;3473447
+3473414;Product;3473448
+3473414;Product;3473449
+3473414;Product;3473450
+3473414;Product;3473451
+3473415;Product;3473452
+3473415;Product;3473453
+3473415;Product;3473454
+3473415;Product;3473455
+/
+/
+Product;Group
+
+
+ProductGroup;ParentGroup
+
+{\0d\0a  "semata.datastore.objectmodel" : \0d\0a  [\0d\0a     "property"\0d\0a  ]\0d\0a}\0d\0a
+/
+ProductGroup;SubGroups
+
+
+3473411;ProductGroup;3473412
+3473411;ProductGroup;3473415
+3473412;ProductGroup;3473413
+3473412;ProductGroup;3473414
+/
+/
+/
+000a0cd1

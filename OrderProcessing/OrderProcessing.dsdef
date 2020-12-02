@@ -1,0 +1,155 @@
+Add ItemType Customer;
+Add ItemType Order;
+Add ItemType OrderLine;
+Add ItemType Product;
+Add ItemType ProductGroup;
+Add AttributeType Customer.AddressLine1 String;
+Add AttributeType Customer.AddressLine2 String;
+Add AttributeType Customer.AddressLine3 String;
+Add AttributeType Customer.Code String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory",
+     "unique"
+  ]
+}
+;
+Add AttributeType Customer.Name String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory"
+  ]
+}
+;
+Add AttributeType Customer.PostCode String;
+Add AttributeType Customer.PostTown String;
+
+Add AttributeType Order.CustomerReference String;
+Add AttributeType Order.Date Date
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory"
+  ]
+}
+;
+Add AttributeType Order.OrderNo String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory",
+     "unique"
+  ]
+}
+;
+
+Add AttributeType OrderLine.Quantity Integer
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory"
+  ]
+}
+;
+
+Add AttributeType Product.Code String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory",
+     "unique"
+  ]
+}
+;
+Add AttributeType Product.Description String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory"
+  ]
+}
+;
+Add AttributeType Product.Price Decimal;
+Add AttributeType Product.StockLevel Integer;
+
+Add AttributeType ProductGroup.Description String;
+Add AttributeType ProductGroup.Name String
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "mandatory",
+     "unique"
+  ]
+}
+;
+
+Add AssociationType Customer.Has
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "associates_prevent_delete"
+  ]
+}
+to Order.By
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "property"
+  ]
+}
+;
+
+Add AssociationType Order.Lines
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "delete_associates"
+  ]
+}
+to OrderLine.On
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "property"
+  ]
+}
+;
+
+Add AssociationType Product.OrderedOn
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "associates_prevent_delete"
+  ]
+}
+to OrderLine.For
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "property",
+     "mandatory(Product not Set)"
+  ]
+}
+;
+
+Add AssociationType ProductGroup.Contains to Product.Is
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "property"
+  ]
+}
+;
+
+Add AssociationType ProductGroup.SubGroups to Product.Group;
+Add Associate ProductGroup.ParentGroup
+{
+  "semata.datastore.objectmodel" : 
+  [
+     "property"
+  ]
+}
+to ProductGroup.SubGroups;
+
