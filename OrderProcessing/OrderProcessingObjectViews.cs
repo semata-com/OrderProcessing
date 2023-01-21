@@ -74,15 +74,43 @@ namespace OrderProcessing
                         });
         }
         
-        protected virtual void NotifyStateChanged(EventArgs args)
+        protected virtual void NotifyStateChanged()
         {
-            StateChanged?.Invoke(this, args);
+            if (PropertyChanged != null)
+            {
+                Trace.TraceInformation(this.GetType().Name + ".StateChanged");
+        
+                if (dataStore_.EventDispatcher == null)
+                {
+                    Trace.IndentLevel++;
+                    StateChanged(this, new EventArgs());
+                    Trace.IndentLevel--;
+                }
+                else
+                {
+                    dataStore_.EventDispatcher(() => StateChanged(this, new EventArgs()));
+                }
+            }
         }
         
         protected virtual void NotifyPropertyChanged(PropertyChangedEventArgs args)
         {
-            PropertyChanged?.Invoke(this, args);
-            NotifyStateChanged(new EventArgs());
+            if (PropertyChanged != null)
+            {
+                Trace.TraceInformation(this.GetType().Name + ".PropertyChanged: " + args.PropertyName);
+        
+                if (dataStore_.EventDispatcher == null)
+                {
+                    Trace.IndentLevel++;
+                    PropertyChanged(this, args);
+                    Trace.IndentLevel--;
+                }
+                else
+                {
+                    dataStore_.EventDispatcher(() => PropertyChanged(this, args));
+                }
+            }
+            NotifyStateChanged();
         }
         
         public void Open(string path)
@@ -96,6 +124,7 @@ namespace OrderProcessing
             dataStore_.Close();
         }
         
+        public OrderProcessing.OrderProcessingDataStore OrderProcessingDataStore => dataStore_;
         public ItemObjectViewList<Customer, CustomerView> CustomerItems => customerItems_.Value;
         
         public ItemObjectViewList<Order, OrderView> OrderItems => orderItems_.Value;
@@ -119,8 +148,6 @@ namespace OrderProcessing
         LazyProperty<object> postCode_;
         LazyProperty<object> postTown_;
         LazyValue<ItemObjectViewList<Order, OrderView>> has_;
-        
-        partial void OnInitialize();
         
         protected override void InitializeValues()
         {
@@ -189,7 +216,6 @@ namespace OrderProcessing
                         list.ListChanged += (object sender, EventArgs e) => NotifyPropertyChanged(new PropertyChangedEventArgs("Has"));
                         return list;
                     });
-            OnInitialize();
         }
         
         public CustomerView() : base()
@@ -261,8 +287,6 @@ namespace OrderProcessing
         LazyProperty<CustomerView> by_;
         LazyValue<ItemObjectViewList<OrderLine, OrderLineView>> lines_;
         
-        partial void OnInitialize();
-        
         protected override void InitializeValues()
         {
             customerReference_=
@@ -307,7 +331,6 @@ namespace OrderProcessing
                         list.ListChanged += (object sender, EventArgs e) => NotifyPropertyChanged(new PropertyChangedEventArgs("Lines"));
                         return list;
                     });
-            OnInitialize();
         }
         
         public OrderView() : base()
@@ -359,8 +382,6 @@ namespace OrderProcessing
         LazyProperty<ProductView> for_;
         LazyProperty<OrderView> on_;
         
-        partial void OnInitialize();
-        
         protected override void InitializeValues()
         {
             quantity_=
@@ -389,7 +410,6 @@ namespace OrderProcessing
                     , (x) => x?.ItemObject != OrderLine.On
                     , (x) => NotifyPropertyChanged(new PropertyChangedEventArgs("On")));
         
-            OnInitialize();
         }
         
         public OrderLineView() : base()
@@ -436,8 +456,6 @@ namespace OrderProcessing
         LazyProperty<ProductGroupView> is_;
         LazyValue<ItemObjectViewList<ProductGroup, ProductGroupView>> group_;
         LazyValue<ItemObjectViewList<OrderLine, OrderLineView>> orderedOn_;
-        
-        partial void OnInitialize();
         
         protected override void InitializeValues()
         {
@@ -500,7 +518,6 @@ namespace OrderProcessing
                         list.ListChanged += (object sender, EventArgs e) => NotifyPropertyChanged(new PropertyChangedEventArgs("OrderedOn"));
                         return list;
                     });
-            OnInitialize();
         }
         
         public ProductView() : base()
@@ -561,8 +578,6 @@ namespace OrderProcessing
         LazyProperty<ProductGroupView> parentGroup_;
         LazyValue<ItemObjectViewList<Product, ProductView>> contains_;
         
-        partial void OnInitialize();
-        
         protected override void InitializeValues()
         {
             description_=
@@ -599,7 +614,6 @@ namespace OrderProcessing
                         list.ListChanged += (object sender, EventArgs e) => NotifyPropertyChanged(new PropertyChangedEventArgs("Contains"));
                         return list;
                     });
-            OnInitialize();
         }
         
         public ProductGroupView() : base()

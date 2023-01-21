@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Semata.DataStore;
 using Semata.DataStore.Util;
 using Semata.DataStore.ObjectModel;
@@ -192,6 +193,19 @@ to ProductGroup.SubGroups;
         {
             BeforeOpening(path);
             base.OpenInstance(path);
+            try
+            {
+                DefineItemObjects();
+            }
+            catch (System.Exception exception)
+            {
+                base.CloseInstance();
+                throw;
+            }
+        }
+        
+        void DefineItemObjects()
+        {
             
             //    Customer
             
@@ -303,7 +317,7 @@ to ProductGroup.SubGroups;
         partial void OnPostTownWriting(ref object value);
         partial void OnInitialize();
         partial void OnValidate();
-        partial void OnCanDelete();
+        partial void OnCanDelete(List<string> errorMessages);
         partial void OnDeleting();
         partial void OnCreated();
         partial void OnWriting();
@@ -317,10 +331,10 @@ to ProductGroup.SubGroups;
             OnValidate();
         }
         
-        protected override void OnItemObjectCanDelete()
+        protected override void OnItemObjectCanDelete(List<string> errorMessages)
         {
-            Has.CheckNoAssociatesExist("");
-            OnCanDelete();
+            Has.CheckNoAssociatesExist(errorMessages, "");
+            OnCanDelete(errorMessages);
         }
         
         protected override void OnItemObjectDeleting()
@@ -419,7 +433,7 @@ to ProductGroup.SubGroups;
         partial void OnByWriting(ref object value);
         partial void OnInitialize();
         partial void OnValidate();
-        partial void OnCanDelete();
+        partial void OnCanDelete(List<string> errorMessages);
         partial void OnDeleting();
         partial void OnCreated();
         partial void OnWriting();
@@ -433,15 +447,16 @@ to ProductGroup.SubGroups;
             OnValidate();
         }
         
-        protected override void OnItemObjectCanDelete()
+        protected override void OnItemObjectCanDelete(List<string> errorMessages)
         {
-            OnCanDelete();
+            Lines.CanDeleteAssociates(errorMessages, "");
+            OnCanDelete(errorMessages);
         }
         
         protected override void OnItemObjectDeleting()
         {
-            OnDeleting();
             Lines.DeleteAssociates();
+            OnDeleting();
         }
         
         protected override void OnItemObjectCreated()
@@ -511,7 +526,7 @@ to ProductGroup.SubGroups;
         partial void OnOnWriting(ref object value);
         partial void OnInitialize();
         partial void OnValidate();
-        partial void OnCanDelete();
+        partial void OnCanDelete(List<string> errorMessages);
         partial void OnDeleting();
         partial void OnCreated();
         partial void OnWriting();
@@ -524,9 +539,9 @@ to ProductGroup.SubGroups;
             OnValidate();
         }
         
-        protected override void OnItemObjectCanDelete()
+        protected override void OnItemObjectCanDelete(List<string> errorMessages)
         {
-            OnCanDelete();
+            OnCanDelete(errorMessages);
         }
         
         protected override void OnItemObjectDeleting()
@@ -607,7 +622,7 @@ to ProductGroup.SubGroups;
         partial void OnIsWriting(ref object value);
         partial void OnInitialize();
         partial void OnValidate();
-        partial void OnCanDelete();
+        partial void OnCanDelete(List<string> errorMessages);
         partial void OnDeleting();
         partial void OnCreated();
         partial void OnWriting();
@@ -621,10 +636,10 @@ to ProductGroup.SubGroups;
             OnValidate();
         }
         
-        protected override void OnItemObjectCanDelete()
+        protected override void OnItemObjectCanDelete(List<string> errorMessages)
         {
-            OrderedOn.CheckNoAssociatesExist("");
-            OnCanDelete();
+            OrderedOn.CheckNoAssociatesExist(errorMessages, "");
+            OnCanDelete(errorMessages);
         }
         
         protected override void OnItemObjectDeleting()
@@ -709,7 +724,7 @@ to ProductGroup.SubGroups;
         partial void OnParentGroupWriting(ref object value);
         partial void OnInitialize();
         partial void OnValidate();
-        partial void OnCanDelete();
+        partial void OnCanDelete(List<string> errorMessages);
         partial void OnDeleting();
         partial void OnCreated();
         partial void OnWriting();
@@ -722,9 +737,9 @@ to ProductGroup.SubGroups;
             OnValidate();
         }
         
-        protected override void OnItemObjectCanDelete()
+        protected override void OnItemObjectCanDelete(List<string> errorMessages)
         {
-            OnCanDelete();
+            OnCanDelete(errorMessages);
         }
         
         protected override void OnItemObjectDeleting()

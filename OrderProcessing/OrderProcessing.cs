@@ -95,7 +95,7 @@ namespace OrderProcessing
         LazyValue<ItemObjectViewList<Order, OrderView>> orderedOrders_;
         LazyValue<SelectorDetailSource> editableOrders_;
 
-        partial void OnInitialize()
+        protected override void OnInitialize()
         {
             orderedOrders_ =
                 new LazyValue<ItemObjectViewList<Order, OrderView>>(() =>
@@ -123,7 +123,7 @@ namespace OrderProcessing
     {
         LazyValue<ItemObjectViewList<OrderLine, OrderLineView>> editableLines_;
 
-        partial void OnInitialize()
+        protected override void OnInitialize()
         {
             editableLines_ =
                 new LazyValue<ItemObjectViewList<OrderLine, OrderLineView>>(() =>
@@ -142,7 +142,7 @@ namespace OrderProcessing
     {
         ProductView currentProduct;
 
-        partial void OnInitialize()
+        protected override void OnInitialize()
         {
             PropertyChanged += OrderLineViewPropertyChanged;
             if (For != null)
